@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>piothub.local</title>
+    <link href="libs/gnb/dist/gnb.css" rel="stylesheet"></link>
+    <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet"></link>
+    <link href="content/Site.css" rel="stylesheet"></link>
+</head>
+
+<body>
+
+    <body>
+        <div data-bind="component:{
+            name: 'st-nav-menu',
+            params: $data
+        }"></div>
+
+        <div class="body-content">
+            <div class="container center">
+                <h1>Hub of things!</h1>
+                <p class="hidden-xs">PioT Hub to control all your home automation bits and bobs</p>
+            </div>
+            <hr />
+        </div>
+        <div data-bind="component:
+            {
+                name: pageComponent,
+                params: $data
+            }">
+        </div>
+    </body>
+    <footer style="display: block">
+        <div class="full-width">
+            <div class="center nav nav-item-container">
+                <p>piofthings.net Designed by Sumit Maitra, MIT License.</p>
+            </div>
+        </div>
+        <script data-main="/spa/st-app/st-boot" src="/libs/requirejs/require.js"></script>
+    </footer>
+</body>
+
+</html>

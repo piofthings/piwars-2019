@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "strict": false,
+    "noImplicitAny": false,
+    "experimentalDecorators": false
+  },
+  "exclude": [
+    "node_modules",
+    "www",
+    "www/typings"
+  ]
+}
