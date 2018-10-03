@@ -1,0 +1,9 @@
+.build
+/node_modules
+/.idea
+npm-debug.log
+
+!scripts/bundled/html4+html5/*.js
+html5
+bundled-un*
+*compressed

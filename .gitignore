@@ -4,7 +4,7 @@ bothub/**/*.js
 bothub/**/*.map
 
 node_modules/
-libs/
+
 
 webconfig.json
 

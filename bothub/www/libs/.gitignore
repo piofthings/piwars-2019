@@ -1,0 +1,13 @@
+
+*.*
+!.gitignore
+!*.js
+!/dist
+!/dist/*.css
+src/
+build/
+!/history.js/scripts/bundled/html4+html5/native.history.js
+scripts/
+demo/
+tests/
+vendor/

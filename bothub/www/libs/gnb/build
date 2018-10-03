@@ -1,0 +1,2 @@
+lessc src/gnb.less dist/gnb.css
+#--plugin=less-plugin-clean-css="advanced"
