@@ -3,7 +3,10 @@
 /.idea
 npm-debug.log
 
-!scripts/bundled/html4+html5/*.js
+!scripts/
+!*.js
+!/dist
+!/dist/*.css
 html5
 bundled-un*
 *compressed

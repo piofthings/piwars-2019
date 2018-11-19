@@ -1,5 +1,5 @@
 .DS_Store
-
+.remote-sync.json
 bothub/**/*.js
 bothub/**/*.map
 

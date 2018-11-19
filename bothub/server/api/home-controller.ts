@@ -22,6 +22,7 @@ export class HomeController extends BaseController {
             req.url.lastIndexOf("static") > 0 ||
             req.url.lastIndexOf("images") > 0 ||
             req.url.lastIndexOf("styles") > 0) {
+                console.log("Rendering Spa: " + req.url);
             next();
         }
         else {

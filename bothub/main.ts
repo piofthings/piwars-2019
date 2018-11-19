@@ -7,6 +7,7 @@ import { SpaEngine } from "./spa-engine";
 import * as express from "express";
 import * as fs from "fs";
 import * as bunyan from "bunyan";
+import * as noble from "noble";
 
 var multer = require('multer');
 var favicon = require('serve-favicon');
@@ -126,7 +127,6 @@ export class main {
                 httpServer.listen(3003, (): void => {
                     console.log(pkg.name, 'listening on port ', httpServer.address().port);
                 });
-
             });
 
         }
