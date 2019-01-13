@@ -3,8 +3,6 @@
 import math
 import time
 
-import sqlite3
-
 from adafruit_servokit import ServoKit
 
 

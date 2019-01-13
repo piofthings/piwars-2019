@@ -11,5 +11,6 @@ class J2controller():
     """The J2 Controller Main processing loop"""
 
     def __init__(self, arg):
-        super(J2controller, self).__init__()
-        self.arg = arg
+        pass
+
+    def
