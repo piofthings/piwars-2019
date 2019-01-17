@@ -5,6 +5,10 @@ from serialisable_base import SerialisableBase
 
 
 class SteeringStatus(SerialisableBase):
+    front_left_port = -1
+    front_right_port = -1
+    rear_left_port = -1
+    rear_right_port = -1
     front_left_delta = 0
     front_right_delta = 0
     rear_left_delta = 0

@@ -1,6 +1,1 @@
-{
-    "rear_right_delta": 0,
-    "front_left_delta": 1,
-    "rear_left_delta": 0,
-    "front_right_delta": 0
-}
+{"front_right_delta": 0, "rear_left_port": "11", "front_left_port": "10", "front_right_port": "1", "rear_right_delta": 0, "rear_left_delta": 0, "front_left_delta": 1, "rear_right_port": "0"}

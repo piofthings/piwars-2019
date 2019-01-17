@@ -15,7 +15,7 @@ def test_Save():
     steerConfig.rear_left_delta = 2
     steerConfig.rear_right_delta = 2
 
-    steerConfig.Save("./data/steering_status.json")
+    steerConfig.save("./data/steering_status.json")
 
     steerConfig = SteeringStatus(json_file="./data/steering_status.json")
 

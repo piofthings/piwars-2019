@@ -31,7 +31,7 @@ class SerialisableBase:
                 return_dict[field] = value
         return return_dict
 
-    def Save(self, file=None):
+    def save(self, file=None):
         if file != None:
             self.__json_file = file
         if self.__json_file != None:

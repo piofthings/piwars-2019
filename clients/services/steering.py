@@ -2,6 +2,9 @@
 
 import math
 import time
+import sys
+import tty
+import termios
 
 from adafruit_servokit import ServoKit
 
@@ -15,7 +18,7 @@ class Steering():
     __kit = None
     __Do = 0
 
-    __init__(self, servoKit):
+    def __init__(self, servoKit):
         self.__kit = servoKit
         self.__frontLeftServo = __kit.servo[11]
         self.__rearLeftServo = __kit.servo[10]
@@ -24,9 +27,9 @@ class Steering():
 
     #======================================================================
     # Reading single character by forcing stdin to raw mode
-    import sys
-    import tty
-    import termios
+    #import sys
+    #import tty
+    #import termios
 
     def readchar(self):
         fd = sys.stdin.fileno()

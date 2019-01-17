@@ -2,14 +2,25 @@
 
 import time
 from adafruit_servokit import ServoKit
+from keyboard_input import KeyboardInput
 
-kit = ServoKit(channels=16)
 
-kit.servo[4].angle = 135
-kit.servo[5].angle = 135
-time.sleep(2)
-kit.servo[4].angle = 0
-kit.servo[5].angle = 0
+class Suspension:
+    __looper = True
+    __keyboardInput = KeyboardInput
+
+    def __init__(self, servoKit):
+        if (servoKit != None):
+            kit = servoKit
+            kit.servo[4].angle = 135
+            kit.servo[5].angle = 135
+            time.sleep(2)
+            kit.servo[4].angle = 0
+            kit.servo[5].angle = 0
+
+    def menu(self):
+        while __looper:
+            print("J2 COntroller -> Wheel Calibration")
 
 
 """"

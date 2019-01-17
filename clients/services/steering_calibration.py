@@ -2,56 +2,68 @@
 
 import math
 import time
+import os.path
+import sys
 
-from adafruit_servokit import ServoKit
+sys.path.append(os.path.abspath(os.path.join(
+    os.path.dirname(__file__), "..")) + "/models/")
+from steering_status import SteeringStatus
+from keyboard_input import KeyboardInput
 
 
 class SteeringCalibration:
-
+    __kit = None
     __looper = True
+    __keyboardInput = None
 
-    def __init__(self, arg):
-        self.arg = arg
-        self.main()
+    def __init__(self, servoKit):
+        self.__kit = servoKit
+        self.__keyboardInput = KeyboardInput("Steering Calibration")
+        self.__steering_status = SteeringStatus(
+            json_file=os.path.abspath(os.path.join(
+                os.path.dirname(__file__), "..")) + "/config/steering_status.json")
 
-    def main(self):
-        print("J2 Controller Main loop")
+    def menu(self):
+        self.__keyboardInput.clear()
+        print("J2 Controller Steering Calibration loop")
         print("Press <Esc> or Ctrl-C to exit")
         print()
-        print("C: Wheel Calibration")
+        print("c: Configure wheel indexes (On Adafruit PWM Board)")
+        print("w: Front left Wheel")
+        print("e: Front right Wheel")
+        print("s: Rear left Wheel")
+        print("d: Rear right Wheel")
+        print("--------------------")
+        print("q: Back")
         print("")
+        self.waitForInput()
+
+    def waitForInput(self):
         while self.__looper:
-            keyp = readkey()
+            keyp = self.__keyboardInput.readkey()
+            if(keyp == 'q'):
+                self.__looper = False
+            elif(keyp == 'c'):
+                print("Enter Port on which front_left steering motor is: ")
+                self.set_steering_status(1, input())
+                print("Enter Port on which front_right steering motor is: ")
+                self.set_steering_status(2, input())
+                print("Enter Port on which rear_left steering motor is: ")
+                self.set_steering_status(3, input())
+                print("Enter Port on which rear_right steering motor is: ")
+                self.set_steering_status(4, input())
+                self.save_steering_status()
+            time.sleep(0.01)
 
-    #======================================================================
-    # Reading single character by forcing stdin to raw mode
-    import sys
-    import tty
-    import termios
+    def set_steering_status(self, index, value):
+        if(index == 1):
+            self.__steering_status.front_left_port = value
+        elif(index == 2):
+            self.__steering_status.front_right_port = value
+        elif(index == 3):
+            self.__steering_status.rear_left_port = value
+        elif(index == 4):
+            self.__steering_status.rear_right_port = value
 
-    def readchar():
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
-        try:
-            tty.setraw(sys.stdin.fileno())
-            ch = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        if ch == '0x03':
-            raise KeyboardInterrupt
-        return ch
-
-    def readkey(getchar_fn=None):
-        getchar = getchar_fn or readchar
-        c1 = getchar()
-        if ord(c1) != 0x1b:
-            return c1
-        c2 = getchar()
-        if ord(c2) != 0x5b:
-            return c1
-        c3 = getchar()
-        # 16=Up, 17=Down, 18=Right, 19=Left arrows
-        return chr(0x10 + ord(c3) - 65)
-
-    # End of single character reading
-    #======================================================================
+    def save_steering_status(self):
+        self.__steering_status.save()
