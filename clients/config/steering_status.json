@@ -1,1 +1,10 @@
-{"front_right_delta": 0, "rear_left_port": "11", "front_left_port": "10", "front_right_port": "1", "rear_right_delta": 0, "rear_left_delta": 0, "front_left_delta": 1, "rear_right_port": "0"}
+{
+    "front_right_port": 1,
+    "front_right_delta": 133.73729158194388,
+    "rear_right_port": 0,
+    "rear_left_delta": 140.76453843025618,
+    "front_left_port": 10,
+    "rear_right_delta": 125.5388369255795,
+    "rear_left_port": 11,
+    "front_left_delta": 139.00772671817813
+}
