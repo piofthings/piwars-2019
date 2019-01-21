@@ -3,79 +3,48 @@
 import math
 import time
 import sys
-import tty
-import termios
+import os
 
 from adafruit_servokit import ServoKit
 
+sys.path.append(os.path.abspath(os.path.join(
+    os.path.dirname(__file__), "..")) + "/models/")
+from steering_status import SteeringStatus
 
-class Steering():
-    FRONT_LEFT_POS = 11
-    FRONT_RIGHT_POS = 10
-    REAR_LEFT_POS = 0
-    REAR_RIGHT_POS = 1
+
+class Steering:
+    FRONT_LEFT_POS = 1
+    FRONT_RIGHT_POS = 2
+    REAR_LEFT_POS = 3
+    REAR_RIGHT_POS = 4
+
+    steering_status = None
 
     __kit = None
     __Do = 0
 
-    def __init__(self, servoKit):
+    def __init__(self, servoKit, steeringStatusFile=None):
         self.__kit = servoKit
-        self.__frontLeftServo = __kit.servo[11]
-        self.__rearLeftServo = __kit.servo[10]
-        self.__frontRightServo = __kit.servo[0]
-        self.__rearRightServo = __kit.servo[1]
-
-    #======================================================================
-    # Reading single character by forcing stdin to raw mode
-    #import sys
-    #import tty
-    #import termios
-
-    def readchar(self):
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
-        try:
-            tty.setraw(sys.stdin.fileno())
-            ch = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        if ch == '0x03':
-            raise KeyboardInterrupt
-        return ch
-
-    def readkey(self, getchar_fn=None):
-        getchar = getchar_fn or readchar
-        c1 = getchar()
-        if ord(c1) != 0x1b:
-            return c1
-        c2 = getchar()
-        if ord(c2) != 0x5b:
-            return c1
-        c3 = getchar()
-        # 16=Up, 17=Down, 18=Right, 19=Left arrows
-        return chr(0x10 + ord(c3) - 65)
-
-    # End of single character reading
-    #======================================================================
-
-    def init(self, servoKit):
-        # ServoKit(channels=16)
-        __kit = servoKit
-
-        __frontLeftServo.angle = 0
-        __rearLeftServo.angle = 0
-        __frontRightServo.angle = 0
-        __rearRightServo.angle = 0
+        if(steeringStatusFile != None):
+            self.steering_status = SteeringStatus(json_file=steeringStatusFile)
+            self.__frontLeftServo = self.__kit.servo[self.steering_status.front_left_port]
+            self.__rearLeftServo = self.__kit.servo[self.steering_status.rear_left_port]
+            self.__frontRightServo = self.__kit.servo[self.steering_status.front_right_port]
+            self.__rearRightServo = self.__kit.servo[self.steering_status.rear_right_port]
+            self.move_servo_to(self.FRONT_LEFT_POS, self.steering_status.front_left_start)
+            self.move_servo_to(self.FRONT_RIGHT_POS, self.steering_status.front_right_start)
+            self.move_servo_to(self.REAR_LEFT_POS, self.steering_status.rear_left_start)
+            self.move_servo_to(self.REAR_RIGHT_POS, self.steering_status.rear_right_start)
 
     def spotTurn(self):
         flVal = 45
         frVal = 135
         blVal = 135
         brVal = 45
-        __frontLeftServo.angle = blVal
-        __rearLeftServo.angle = blVal
-        __frontRightServo.angle = frVal
-        __rearRightServo.angle = brVal
+        self.__frontLeftServo.angle = blVal
+        self.__rearLeftServo.angle = blVal
+        self.__frontRightServo.angle = frVal
+        self.__rearRightServo.angle = brVal
 
     """
     L = Distance between front wheel and rear wheel
@@ -124,169 +93,106 @@ class Steering():
         self.__Do = degrees * -1
         self.__Di = self.calculate(degrees * -1)
 
-    def waitForInput(self):
-        speed = 60
+    def increment_position(self, index, increment):
+        if(index == 1):
+            if(self.steering_status.front_left_delta < self.steering_status.actuation_range):
+                self.steering_status.front_left_delta = self.steering_status.front_left_delta + increment
+                print("\r front_left_delta: " + str(self.steering_status.front_left_delta), end='\r', flush=True)
+        elif(index == 2):
+            if(self.steering_status.front_right_delta < self.steering_status.actuation_range):
+                self.steering_status.front_right_delta = self.steering_status.front_right_delta + increment
+                print("\r front_right_delta: " + str(self.steering_status.front_right_delta), end='\r', flush=True)
+        elif(index == 3):
+            if(self.steering_status.rear_left_delta < self.steering_status.actuation_range):
+                self.steering_status.rear_left_delta = self.steering_status.rear_left_delta + increment
+                print("\r rear_left_delta: " + str(self.steering_status.rear_left_delta), end='\r', flush=True)
+        elif(index == 4):
+            if(self.steering_status.rear_right_delta < self.steering_status.actuation_range):
+                self.steering_status.rear_right_delta = self.steering_status.rear_right_delta + increment
+                print("\r rear_right_delta: " + str(self.steering_status.rear_right_delta), end='\r', flush=True)
 
-        print("Tests the servos by using the arrow keys to control")
-        print("Press <space> key to centre")
-        print("Press Ctrl-C to end")
+    def decrement_position(self, index, decrement):
+        if(index == 1):
+            if(self.steering_status.front_left_delta > 0):
+                self.steering_status.front_left_delta = self.steering_status.front_left_delta - decrement
+                print("\r front_left_delta: " + str(self.steering_status.front_left_delta), end='\r', flush=True)
+        elif(index == 2):
+            if(self.steering_status.front_right_delta > 0):
+                self.steering_status.front_right_delta = self.steering_status.front_right_delta - decrement
+                print("\r front_right_delta: " + str(self.steering_status.front_right_delta), end='\r', flush=True)
+        elif(index == 3):
+            if(self.steering_status.rear_left_delta > 0):
+                self.steering_status.rear_left_delta = self.steering_status.rear_left_delta - decrement
+            print("\r rear_left_delta: " + str(self.steering_status.rear_left_delta), end='\r', flush=True)
+        elif(index == 4):
+            if(self.steering_status.rear_right_delta > 0):
+                self.steering_status.rear_right_delta = self.steering_status.rear_right_delta - decrement
+                print("\r rear_right_delta: " + str(self.steering_status.rear_right_delta), end='\r', flush=True)
 
-        # main loop
-        try:
-            while True:
-                keyp = readkey()
-                if keyp == 'c':
-                    self.spotTurn()
+    def set_steering_port(self, index, value):
+        if(index == 1):
+            self.steering_status.front_left_port = value
+        elif(index == 2):
+            self.steering_status.front_right_port = value
+        elif(index == 3):
+            self.steering_status.rear_left_port = value
+        elif(index == 4):
+            self.steering_status.rear_right_port = value
 
-        #        if keyp == 'w' or ord(keyp) == 16:
-        #            panVal = max (0, panVal - 5)
-        #            print 'Up', panVal
-        #        elif keyp == 'z' or ord(keyp) == 17:
-        #            panVal = min (180, panVal + 5)
-        #            print 'Down', panVal
-        #        elif keyp == 's' or ord(keyp) == 18:
-        #            tiltVal = max (0, tiltVal - 5)
-        #            print 'Right', tiltVal
-        #        elif keyp == 'a' or ord(keyp) == 19:
-        #            tiltVal = min (180, tiltVal + 5)
-        #            print 'Left', tiltVal
-        #        elif keyp == 'g':
-        #            gripVal = max (0, gripVal - 5)
-        #            print 'Open', gripVal
-        #        elif keyp == 'h':
-        #            gripVal = min (180, gripVal + 5)
-        #            print 'Close', gripVal
-                elif keyp == ' ':
-                    flVal = frVal = blVal = brVal = 90
-                    print('Centre')
-                elif ord(keyp) == 3:
-                    break
-                pz.setOutput(front_left, flVal)
-                pz.setOutput(front_right, frVal)
-                pz.setOutput(back_left, blVal)
-                pz.setOutput(back_right, brVal)
+    def set_actuation_degrees(self, degrees):
+        if degrees < 360 and degrees > 0:
+            self.steering_status.actuation_range = degrees
+        self.update_servos()
 
-        except KeyboardInterrupt:
-            print
+    def save_steering_status(self):
+        self.steering_status.front_left_delta = self.__kit.servo[int(self.steering_status.front_left_port)].angle
+        self.steering_status.front_right_delta = self.__kit.servo[int(self.steering_status.front_right_port)].angle
+        self.steering_status.rear_left_delta = self.__kit.servo[int(self.steering_status.rear_left_port)].angle
+        self.steering_status.rear_right_delta = self.__kit.servo[int(self.steering_status.rear_right_port)].angle
+        self.steering_status.save()
 
-        finally:
-            pz.cleanup()
+    def move_servo_to(self, index, value):
+        if(index == 1):
+            self.__kit.servo[int(self.steering_status.front_left_port)].angle = value
+        elif(index == 2):
+            self.__kit.servo[int(self.steering_status.front_right_port)].angle = value
+        elif(index == 3):
+            self.__kit.servo[int(self.steering_status.rear_left_port)].angle = value
+        elif(index == 4):
+            self.__kit.servo[int(self.steering_status.rear_right_port)].angle = value
 
+    def move_servo_by(self, index, value):
+        if(index == 1):
+            self.__kit.servo[int(self.steering_status.front_left_port)].angle = self.__kit.servo[int(self.steering_status.front_left_port)].angle + value
+            print("\r Front left servo angle: " + str(self.__kit.servo[int(self.steering_status.front_left_port)].angle), end='\r', flush=True)
+        elif(index == 2):
+            self.__kit.servo[int(self.steering_status.front_right_port)].angle = self.__kit.servo[int(self.steering_status.front_right_port)].angle + value
 
-"""
-# Picon Zero Servo Test
-# Use arrow keys to move 2 servos on outputs 0 and 1 for Pan and Tilt
-# Use G and H to open and close the Gripper arm
-# Press Ctrl-C to stop
-#
+            print("\r Front right servo angle: " +
+                  str(self.__kit.servo[int(self.steering_status.front_right_port)].angle), end='\r', flush=True)
+        elif(index == 3):
+            self.__kit.servo[int(self.steering_status.rear_left_port)
+                             ].angle = self.__kit.servo[int(self.steering_status.rear_left_port)].angle + value
+            print("\r Rear left servo angle: " +
+                  str(self.__kit.servo[int(self.steering_status.rear_left_port)].angle), end='\r', flush=True)
+        elif(index == 4):
+            self.__kit.servo[int(self.steering_status.rear_right_port)].angle = self.__kit.servo[int(self.steering_status.rear_right_port)].angle + value
+            print("\r Rear left right angle: " + str(self.__kit.servo[int(self.steering_status.rear_right_port)].angle), end='\r', flush=True)
 
-import piconzero as pz, time
+    def print_servo_stats(self):
+        print("Front left:" + str(self.__kit.servo[int(self.steering_status.front_left_port)].angle))
+        print("Front right:" + str(self.__kit.servo[int(self.steering_status.front_right_port)].angle))
+        print("Rear left:" + str(self.__kit.servo[int(self.steering_status.rear_left_port)].angle))
+        print("Rear right:" + str(self.__kit.servo[int(self.steering_status.rear_right_port)].angle))
 
-#======================================================================
-# Reading single character by forcing stdin to raw mode
-import sys
-import tty
-import termios
+    def update_servos(self):
+        self.__kit.servo[int(self.steering_status.front_left_port)].angle = self.steering_status.front_left_delta
+        self.__kit.servo[int(self.steering_status.front_left_port)].actuation_range = self.steering_status.actuation_range
 
-def readchar():
-    fd = sys.stdin.fileno()
-    old_settings = termios.tcgetattr(fd)
-    try:
-        tty.setraw(sys.stdin.fileno())
-        ch = sys.stdin.read(1)
-    finally:
-        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-    if ch == '0x03':
-        raise KeyboardInterrupt
-    return ch
+        self.__kit.servo[int(self.steering_status.front_right_port)].angle = self.steering_status.front_right_delta
+        self.__kit.servo[int(self.steering_status.front_right_port)].actuation_range = self.steering_status.actuation_range
 
-def readkey(getchar_fn=None):
-    getchar = getchar_fn or readchar
-    c1 = getchar()
-    if ord(c1) != 0x1b:
-        return c1
-    c2 = getchar()
-    if ord(c2) != 0x5b:
-        return c1
-    c3 = getchar()
-    return chr(0x10 + ord(c3) - 65)  # 16=Up, 17=Down, 18=Right, 19=Left arrows
+        self.__kit.servo[int(self.steering_status.rear_left_port)].actuation_range = self.steering_status.actuation_range
 
-# End of single character reading
-#======================================================================
-
-speed = 60
-
-print("Tests the servos by using the arrow keys to control")
-print("Press <space> key to centre")
-print("Press Ctrl-C to end")
-print
-
-# Define which pins are the servos
-front_left = 0
-front_right = 3
-back_left = 1
-back_right = 2
-
-pz.init()
-
-# Set output mode to Servo
-pz.setOutputConfig(front_left, 2)
-pz.setOutputConfig(front_right, 2)
-pz.setOutputConfig(back_left, 2)
-pz.setOutputConfig(back_right, 2)
-
-# Centre all servos
-flVal = 90
-frVal = 90
-blVal = 90
-brVal = 90
-
-pz.setOutput (front_right, frVal)
-pz.setOutput (back_left, blVal)
-pz.setOutput (back_right, brVal)
-
-# main loop
-try:
- while True:
-  keyp = readkey()
-  if keyp == 'c':
-   flVal = 45
-   frVal = 135
-   blVal = 130
-   brVal = 45
-#        if keyp == 'w' or ord(keyp) == 16:
-#            panVal = max (0, panVal - 5)
-#            print 'Up', panVal
-#        elif keyp == 'z' or ord(keyp) == 17:
-#            panVal = min (180, panVal + 5)
-#            print 'Down', panVal
-#        elif keyp == 's' or ord(keyp) == 18:
-#            tiltVal = max (0, tiltVal - 5)
-#            print 'Right', tiltVal
-#        elif keyp == 'a' or ord(keyp) == 19:
-#            tiltVal = min (180, tiltVal + 5)
-#            print 'Left', tiltVal
-#        elif keyp == 'g':
-#            gripVal = max (0, gripVal - 5)
-#            print 'Open', gripVal
-#        elif keyp == 'h':
-#            gripVal = min (180, gripVal + 5)
-#            print 'Close', gripVal
-  elif keyp == ' ':
-   flVal = frVal = blVal = brVal = 90
-   print ('Centre')
-  elif ord(keyp) == 3:
-   break
-  pz.setOutput (front_left, flVal)
-  pz.setOutput (front_right, frVal)
-  pz.setOutput (back_left, blVal)
-  pz.setOutput (back_right, brVal)
-
-except KeyboardInterrupt:
- print
-
-finally:
- pz.cleanup()
-
-
-"""
+        self.__kit.servo[int(self.steering_status.rear_right_port)].angle = self.steering_status.rear_right_delta
+        self.__kit.servo[int(self.steering_status.rear_right_port)].actuation_range = self.steering_status.actuation_range

@@ -9,19 +9,20 @@ sys.path.append(os.path.abspath(os.path.join(
     os.path.dirname(__file__), "..")) + "/models/")
 from steering_status import SteeringStatus
 from keyboard_input import KeyboardInput
+from steering import Steering
 
 
 class SteeringCalibration:
     __kit = None
     __looper = True
     __keyboardInput = None
+    __steering = None
 
     def __init__(self, servoKit):
         self.__kit = servoKit
         self.__keyboardInput = KeyboardInput("Steering Calibration")
-        self.__steering_status = SteeringStatus(
-            json_file=os.path.abspath(os.path.join(
-                os.path.dirname(__file__), "..")) + "/config/steering_status.json")
+        self.__steering = Steering(self.__kit, steeringStatusFile=os.path.abspath(os.path.join(
+            os.path.dirname(__file__), "..")) + "/config/steering_status.json")
 
     def menu(self):
         self.__keyboardInput.clear()
@@ -33,7 +34,8 @@ class SteeringCalibration:
         print("s: Rear left Wheel")
         print("d: Rear right Wheel")
         print("r: Save current status")
-        print("0: Reset all to 90")
+        print("t: Reset all to *_start angle in sttering_status.json")
+        print("a: Set Actuation Angle")
         print("--------------------")
         print("q: Back")
         print("")
@@ -43,18 +45,20 @@ class SteeringCalibration:
         while self.__looper:
             keyp = self.__keyboardInput.readkey()
             if(keyp == 'q'):
-                self.save_steering_status()
+                print("Saving...")
+                self.__steering.save_steering_status()
+                print("Quit")
                 self.__looper = False
             elif(keyp == 'c'):
                 print("Enter Port on which front_left steering motor is: ")
-                self.set_steering_status(1, input())
+                self.__steering.set_steering_status(1, input())
                 print("Enter Port on which front_right steering motor is: ")
-                self.set_steering_status(2, input())
+                self.__steering.set_steering_status(2, input())
                 print("Enter Port on which rear_left steering motor is: ")
-                self.set_steering_status(3, input())
+                self.__steering.set_steering_status(3, input())
                 print("Enter Port on which rear_right steering motor is: ")
-                self.set_steering_status(4, input())
-                self.save_steering_status()
+                self.__steering.set_steering_status(4, input())
+                self.__steering.save_steering_status()
             elif(keyp == 'w'):
                 self.calibrate_steering(1)
             elif(keyp == 'e'):
@@ -64,96 +68,38 @@ class SteeringCalibration:
             elif(keyp == 'd'):
                 self.calibrate_steering(4)
             elif(keyp == 'r'):
-                self.save_steering_status()
+                self.__steering.save_steering_status()
                 print("Saved to file", end='\r', flush=True)
-            elif(keyp == '0'):
-                self.__steering_status.front_left_delta = 90
-                self.__steering_status.front_right_delta = 90
-                self.__steering_status.rear_left_delta = 90
-                self.__steering_status.rear_right_delta = 90
-                self.__update_servos()
+            elif(keyp == 't'):
+                self.__steering.move_servo_to(Steering.FRONT_LEFT_POS, self.__steering.steering_status.front_left_start)
+                self.__steering.move_servo_to(Steering.FRONT_RIGHT_POS, self.__steering.steering_status.front_right_start)
+                self.__steering.move_servo_to(Steering.REAR_LEFT_POS, self.__steering.steering_status.rear_left_start)
+                self.__steering.move_servo_to(Steering.REAR_RIGHT_POS, self.__steering.steering_status.rear_right_start)
+                print("\r\n Servos updated")
+                print("\r\n Servo status")
+                self.__steering.print_servo_stats()
+            elif (keyp == 'a'):
+                print("Set actuation degrees [180-270]: ")
+                self.__steering.set_actuation_degrees(int(input()))
             time.sleep(0.01)
 
     def calibrate_steering(self, index):
         waitForWheel = True
         keyboardInput = KeyboardInput("Calibrate Steering:")
-        print("Press Up/Down or w/z to adjust wheel delta, 0 to reset, q when done")
+        print("Press Up/Down to test or w/z to adjust wheel delta, 0 to reset, q when done")
         while waitForWheel:
             key = keyboardInput.readkey()
-            if(key == 'w' or ord(key) == 16):
-                if(index == 1):
-                    self.__steering_status.front_left_delta = self.__steering_status.front_left_delta + 1
-                    print("\r front_left_delta: " +
-                          str(self.__steering_status.front_left_delta), end='\r', flush=True)
-                elif(index == 2):
-                    self.__steering_status.front_right_delta = self.__steering_status.front_right_delta + 1
-                    print("\r front_right_delta: " +
-                          str(self.__steering_status.front_right_delta), end='\r', flush=True)
-                elif(index == 3):
-                    self.__steering_status.rear_left_delta = self.__steering_status.rear_left_delta + 1
-                    print("\r rear_left_delta: " +
-                          str(self.__steering_status.rear_left_delta), end='\r', flush=True)
-                elif(index == 4):
-                    self.__steering_status.rear_right_delta = self.__steering_status.rear_right_delta + 1
-                    print("\r rear_right_delta: " +
-                          str(self.__steering_status.rear_right_delta), end='\r', flush=True)
-
-                self.__update_servos()
-            elif(key == 'z' or ord(key) == 17):
-                if(index == 1):
-                    if(self.__steering_status.front_left_delta > 0):
-                        self.__steering_status.front_left_delta = self.__steering_status.front_left_delta - 1
-                        print("\r front_left_delta: " +
-                              str(self.__steering_status.front_left_delta), end='\r', flush=True)
-                elif(index == 2):
-                    if(self.__steering_status.front_right_delta > 0):
-                        self.__steering_status.front_right_delta = self.__steering_status.front_right_delta - 1
-                        print("\r front_right_delta: " +
-                              str(self.__steering_status.front_right_delta), end='\r', flush=True)
-                elif(index == 3):
-                    if(self.__steering_status.rear_left_delta > 0):
-                        self.__steering_status.rear_left_delta = self.__steering_status.rear_left_delta - 1
-                    print("\r rear_left_delta: " +
-                          str(self.__steering_status.rear_left_delta), end='\r', flush=True)
-                elif(index == 4):
-                    if(self.__steering_status.rear_right_delta > 0):
-                        self.__steering_status.rear_right_delta = self.__steering_status.rear_right_delta - 1
-                        print("\r rear_right_delta: " +
-                              str(self.__steering_status.rear_right_delta), end='\r', flush=True)
-                self.__update_servos()
-
+            if(key == 'w'):
+                self.__steering.increment_position(index, 1)
+                self.__steering.update_servos()
+            elif(ord(key) == 16):
+                self.__steering.move_servo_by(index, 1)
+            elif(key == 'z'):
+                self.__steering.decrement_position(index, 1)
+                self.__steering.update_servos()
+            elif(ord(key) == 17):
+                self.__steering.move_servo_by(index, -1)
             elif(key == 'q'):
-                self.save_steering_status()
+                self.__steering.save_steering_status()
                 waitForWheel = False
             time.sleep(0.01)
-
-    def set_steering_status(self, index, value):
-        if(index == 1):
-            self.__steering_status.front_left_port = value
-        elif(index == 2):
-            self.__steering_status.front_right_port = value
-        elif(index == 3):
-            self.__steering_status.rear_left_port = value
-        elif(index == 4):
-            self.__steering_status.rear_right_port = value
-
-    def save_steering_status(self):
-        self.__steering_status.front_left_delta = self.__kit.servo[int(
-            self.__steering_status.front_left_port)].angle
-        self.__steering_status.front_right_delta = self.__kit.servo[int(
-            self.__steering_status.front_right_port)].angle
-        self.__steering_status.rear_left_delta = self.__kit.servo[int(
-            self.__steering_status.rear_left_port)].angle
-        self.__steering_status.rear_right_delta = self.__kit.servo[int(
-            self.__steering_status.rear_right_port)].angle
-        self.__steering_status.save()
-
-    def __update_servos(self):
-        self.__kit.servo[int(self.__steering_status.front_left_port)
-                         ].angle = self.__steering_status.front_left_delta
-        self.__kit.servo[int(self.__steering_status.front_right_port)
-                         ].angle = self.__steering_status.front_right_delta
-        self.__kit.servo[int(self.__steering_status.rear_left_port)
-                         ].angle = self.__steering_status.rear_left_delta
-        self.__kit.servo[int(self.__steering_status.rear_right_port)
-                         ].angle = self.__steering_status.rear_right_delta

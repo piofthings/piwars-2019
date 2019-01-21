@@ -37,6 +37,7 @@ class J2controller():
                 sc = SteeringCalibration(self.__kit)
                 sc.menu()
                 self.__menu()
+            elif (keyp == 'd' or keyp == 'd'):
 
             time.sleep(0.01)
 
@@ -45,6 +46,7 @@ class J2controller():
         print("J2 Controller")
         print("Press <Esc> or Ctrl-C to exit")
         print("c: Wheel Calibration")
+        print("d: Test drive")
         print("--------------------")
         print("q: Quit")
         print("")

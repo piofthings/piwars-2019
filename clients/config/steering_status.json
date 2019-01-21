@@ -1,10 +1,15 @@
 {
-    "front_right_port": 1,
-    "front_right_delta": 133.73729158194388,
+    "front_right_start": 45,
+    "rear_left_start": 135,
+    "front_right_delta": 44.7254981699878,
+    "rear_right_start": 60,
+    "rear_left_delta": 134.90849938999594,
     "rear_right_port": 0,
-    "rear_left_delta": 140.76453843025618,
     "front_left_port": 10,
-    "rear_right_delta": 125.5388369255795,
+    "actuation_range": 180,
+    "rear_right_delta": 0,
+    "front_right_port": 1,
     "rear_left_port": 11,
-    "front_left_delta": 139.00772671817813
+    "front_left_start": 60,
+    "front_left_delta": 0
 }
