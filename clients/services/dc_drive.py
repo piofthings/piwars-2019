@@ -15,7 +15,7 @@ class DcDrive():
     __leftMotors = PhaseEnableMotor(
         phase=__phaseDirPinRedRightChannel, enable=__pwmEnablePinWhiteRightChannel, pwm=True)
 
-    __currentSpeed = 0.5
+    __currentSpeed = 0
 
     def setSpeed(self, newSpeed):
         if newSpeed >= 0 and newSpeed <= 1:
