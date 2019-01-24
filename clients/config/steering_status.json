@@ -1,8 +1,8 @@
 {
-    "front_right_start": 45,
-    "rear_left_start": 135,
+    "front_right_start": 55,
+    "rear_left_start": 120,
     "front_right_delta": 44.7254981699878,
-    "rear_right_start": 60,
+    "rear_right_start": 47,
     "rear_left_delta": 134.90849938999594,
     "rear_right_port": 0,
     "front_left_port": 10,
@@ -10,6 +10,6 @@
     "rear_right_delta": 0,
     "front_right_port": 1,
     "rear_left_port": 11,
-    "front_left_start": 60,
+    "front_left_start": 53,
     "front_left_delta": 0
 }

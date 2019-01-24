@@ -3,6 +3,7 @@ import math
 import time
 import sys
 import os
+from bluedot.btcomm import BluetoothClient
 
 from adafruit_servokit import ServoKit
 
@@ -21,6 +22,7 @@ class J2controller():
     __looper = True
     __kit = ServoKit(channels=16)
     __keyboardInput = KeyboardInput("J2Controller")
+    __bt_client = BluetoothClient("j2cruncher", data_received)
 
     def __init__(self, arg):
         self.arg = arg
@@ -37,7 +39,7 @@ class J2controller():
                 sc = SteeringCalibration(self.__kit)
                 sc.menu()
                 self.__menu()
-            elif (keyp == 'd' or keyp == 'd'):
+            # elif (keyp == 'd' or keyp == 'd'):
 
             time.sleep(0.01)
 
@@ -51,6 +53,20 @@ class J2controller():
         print("q: Quit")
         print("")
 
+    def data_received(data):
+        print(data)
+
 
 j2 = J2controller(sys.argv)
 j2.init()
+
+# bt_client.py
+# from bluedot.btcomm import BluetoothClient
+# from signal import pause
+#
+# def data_received(data):
+#     print(data)
+#
+# c.send("helloworld")
+#
+# pause()
