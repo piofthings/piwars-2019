@@ -70,15 +70,11 @@ class JoystickController():
 
     def run(self):
         # Setup pygame and wait for the joystick to become available
-        self.__tb.MotorsOff()
-        self.__tb.SetLedShowBattery(False)
-        self.__tb.SetLeds(0, 0, 1)
         # Removes the need to have a GUI window
         os.environ["SDL_VIDEODRIVER"] = "dummy"
         pygame.init()
         # pygame.display.set_mode((1,1))
         print('Waiting for joystick... (press CTRL+C to abort)')
-        self.__tb.SetLeds(0, 0, 0)
         while True:
             try:
                 try:
