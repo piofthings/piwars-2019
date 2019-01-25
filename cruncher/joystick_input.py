@@ -40,16 +40,16 @@ class JoystickController():
 
         self.__dcd = dc_drive_instance
 
-        failsafe = False
-        for i in range(5):
-            self.__tb.SetCommsFailsafe(True)
-            failsafe = self.__tb.GetCommsFailsafe()
-            if failsafe:
-                break
-        if not failsafe:
-            print('Board %02X failed to report in failsafe mode!' %
-                  (self.__tb.i2cAddress))
-            sys.exit()
+        # failsafe = False
+        # for i in range(5):
+        #     self.__tb.SetCommsFailsafe(True)
+        #     failsafe = self.__tb.GetCommsFailsafe()
+        #     if failsafe:
+        #         break
+        # if not failsafe:
+        #     print('Board %02X failed to report in failsafe mode!' %
+        #           (self.__tb.i2cAddress))
+        #     sys.exit()
 
         # Setup the power limits
         # if self.voltageOut > self.voltageIn:
@@ -82,7 +82,7 @@ class JoystickController():
                     # Attempt to setup the joystick
                     if pygame.joystick.get_count() < 1:
                         # No joystick attached, set LEDs blue
-                        self.__tb.SetLeds(0, 0, 1)
+                        # self.__tb.SetLeds(0, 0, 1)
                         pygame.joystick.quit()
                         time.sleep(0.1)
                     else:
@@ -91,18 +91,18 @@ class JoystickController():
                         break
                 except pygame.error:
                     # Failed to connect to the joystick, set LEDs blue
-                    self.__tb.SetLeds(0, 0, 1)
+                    # self.__tb.SetLeds(0, 0, 1)
                     pygame.joystick.quit()
                     time.sleep(0.1)
             except KeyboardInterrupt:
                 # CTRL+C exit, give up
                 print('\nUser aborted')
-                self.__tb.SetCommsFailsafe(False)
-                self.__tb.SetLeds(0, 0, 0)
+                # self.__tb.SetCommsFailsafe(False)
+                # self.__tb.SetLeds(0, 0, 0)
                 sys.exit()
         print('Joystick found')
         joystick.init()
-        self.__tb.SetLedShowBattery(True)
+        # self.__tb.SetLedShowBattery(True)
         ledBatteryMode = True
         try:
             print('Press CTRL+C to quit')
@@ -164,39 +164,39 @@ class JoystickController():
                             driveLeft *= self.slowFactor
                             driveRight *= self.slowFactor
                         # Set the motors to the new speeds
-                        self.__tb.SetMotor1(driveRight * self.maxPower)
-                        self.__tb.SetMotor2(driveLeft * self.maxPower)
+                        # self.__tb.SetMotor1(driveRight * self.maxPower)
+                        # self.__tb.SetMotor2(driveLeft * self.maxPower)
                 # Change LEDs to purple to show motor faults
-                if self.__tb.GetDriveFault1() or self.__tb.GetDriveFault2():
-                    if ledBatteryMode:
-                        self.__tb.SetLedShowBattery(False)
-                        self.__tb.SetLeds(1, 0, 1)
-                        ledBatteryMode = False
-                else:
-                    if not ledBatteryMode:
-                        self.__tb.SetLedShowBattery(True)
-                        ledBatteryMode = True
+                # if self.__tb.GetDriveFault1() or self.__tb.GetDriveFault2():
+                    # if ledBatteryMode:
+                        # self.__tb.SetLedShowBattery(False)
+                        # self.__tb.SetLeds(1, 0, 1)
+                        # ledBatteryMode = False
+                # else:
+                    # if not ledBatteryMode:
+                        # self.__tb.SetLedShowBattery(True)
+                        # ledBatteryMode = True
                 # Wait for the interval period
                 time.sleep(self.interval)
             # Disable all drives
-            self.__tb.MotorsOff()
+            # self.__tb.MotorsOff()
         except KeyboardInterrupt:
             # CTRL+C exit, disable all drives
-            self.__tb.MotorsOff()
-            self.__tb.SetCommsFailsafe(False)
-            self.__tb.SetLedShowBattery(False)
-            self.__tb.SetLeds(0, 0, 0)
+            # self.__tb.MotorsOff()
+            # self.__tb.SetCommsFailsafe(False)
+            # self.__tb.SetLedShowBattery(False)
+            # self.__tb.SetLeds(0, 0, 0)
         print
 
     def init_main():
-        self.__tb.Init()
-        self.__ub.Init()
+        # self.__tb.Init()
+        # self.__ub.Init()
 
 
 def main():
-    tb = ThunderBorg3.ThunderBorg()
-    ub = UltraBorg3.UltraBorg()
-    controller = GolfJoystickController(tb, ub)
+    # tb = ThunderBorg3.ThunderBorg()
+    dc = DcDrive()
+    controller = JoystickController(tb, ub)
     controller.init_main()
     controller.run()
 
