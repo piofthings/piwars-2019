@@ -12,7 +12,7 @@ from keyboard_input import KeyboardInput
 from steering import Steering
 
 
-class SteeringCalibration:
+class ServoCalibration:
     __kit = None
     __looper = True
     __keyboardInput = None
@@ -26,7 +26,7 @@ class SteeringCalibration:
 
     def menu(self):
         self.__keyboardInput.clear()
-        print("J2 Controller Steering Calibration loop")
+        print("J2 Controller Steering Calibration Menu:")
         print()
         print("c: Configure wheel indexes (On Adafruit PWM Board)")
         print("w: Front left Wheel")

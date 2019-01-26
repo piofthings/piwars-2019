@@ -21,10 +21,25 @@ class DcDrive():
         if newSpeed >= 0 and newSpeed <= 1:
             self.__currentSpeed = newSpeed
 
+    def moveForward(self, newSpeed):
+        if newSpeed >= 0 and newSpeed <= 1:
+            self.setSpeed(newSpeed)
+            self.__rightMotors.forward(speed)
+            self.__leftMotors.forward(speed)
+
+    def moveForward(self, newSpeed):
+        if newSpeed >= 0 and newSpeed <= 1:
+            self.setSpeed(newSpeed)
+            self.__rightMotors.backward(speed)
+            self.__leftMotors.backward(speed)
+
+    def stop(self):
+        self.setSpeed(0)
+        self.__rightMotors.forward(0)
+        self.__leftMotors.forward(0)
+
 
 """
-
-
 enable_pwm_white_02 =  12
 phase_dir_red_02 = 5
 enable_pwm_white_01 = 13

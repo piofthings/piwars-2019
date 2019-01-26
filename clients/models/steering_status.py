@@ -17,7 +17,11 @@ class SteeringStatus(SerialisableBase):
     front_left_start = 135
     rear_left_start = 135
     rear_right_start = 135
-    actuation_range = 180
+    actuation_range = 160
+    suspension_front_max = 135
+    suspension_front_min = 70
+    suspension_rear_max = 135
+    suspension_rear_min = 70
 
     def __init__(self, json_def=None, json_file=None):
         super().__init__(json_def, json_file)

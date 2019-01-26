@@ -13,7 +13,7 @@ sys.path.append(os.path.abspath(os.path.join(
 from dc_drive import DcDrive
 from steering import Steering
 from suspension import Suspension
-from steering_calibration import SteeringCalibration
+from steering_calibration import ServoCalibration
 from keyboard_input import KeyboardInput
 
 
@@ -36,7 +36,7 @@ class J2controller():
             if (keyp == 'q'):
                 self.__looper = False
             elif (keyp == 'c' or keyp == 'C'):
-                sc = SteeringCalibration(self.__kit)
+                sc = ServoCalibration(self.__kit)
                 sc.menu()
                 self.__menu()
             # elif (keyp == 'd' or keyp == 'd'):
