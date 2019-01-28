@@ -1,10 +1,16 @@
+from gfxhat import touch, lcd, backlight, fonts
+from PIL import Image, ImageFont, ImageDraw
+
 class CruncherMenuOption:
     def __init__(self, name, action, options=()):
+        self.__font = ImageFont.truetype(fonts.BitbuntuFull, 10)
+
         self.name = name
         self.action = action
         self.options = options
-        self.size = font.getsize(name)
+        self.size = self.__font.getsize(name)
         self.width, self.height = self.size
 
     def trigger(self):
-        self.action(*self.options)
+        if(self.action != None):
+            self.action(*self.options)
