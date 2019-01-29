@@ -8,6 +8,7 @@ from gfxhat import touch, lcd, backlight, fonts
 from PIL import Image, ImageFont, ImageDraw
 from cruncher_menu_option import CruncherMenuOption
 
+
 class CruncherMenu:
     __current_menu_option = None
     #__trigger_action = None
@@ -22,6 +23,7 @@ class CruncherMenu:
     __trigger_action = False
 
     __looper = False
+
     def __init__(self):
         print("""
         Press Ctrl+C or select "Exit" to exit.
@@ -65,6 +67,16 @@ class CruncherMenu:
             CruncherMenuOption("Back", self.set_menu_options)
         ]
 
+    def init_servo_index_menu(self):
+        self.__servo_index_options = [
+            CruncherMenuOption("Front left Wheel", None),
+            CruncherMenuOption("Front Right Wheel", None),
+            CruncherMenuOption("Rear left Wheel", None),
+            CruncherMenuOption("Rear right Wheel", None),
+            CruncherMenuOption("Front Suspension", None),
+            CruncherMenuOption("Rear Suspension", None),
+            CruncherMenuOption("Actuation angle", None),
+        ]
 
     def set_menu_options(self, menuOptions=None):
         if(menuOptions == None):
@@ -74,16 +86,14 @@ class CruncherMenu:
 
     def show_wheels_calibration(self):
         self.set_menu_options(self.__calibration_options)
-        #self.paint_screen()
-
-
+        # self.paint_screen()
 
     def set_backlight(self, r, g, b):
         backlight.set_all(r, g, b)
         backlight.show()
 
     def handler(self, ch, event):
-        #global
+        # global
         if event != 'press':
             return
         if ch == 1:
@@ -146,6 +156,7 @@ class CruncherMenu:
 
         except KeyboardInterrupt:
             self.cleanup()
+
 
 menu = CruncherMenu()
 menu.run()
