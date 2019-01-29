@@ -4,9 +4,9 @@
 <table class="table">
     <thead>
         <tr>
-            <td colspan="2">
+            <th colspan="2">
             <strong>Configure Servo Indexes</strong>
-            </td>
+            </th>
         <tr>
     </thead>
     <tbody>
@@ -27,12 +27,11 @@
         </tr>
         <tr>
             <td colspan=2>
-                <table class="table">
+              <table class="table">
                 <thead>
                     <tr>
                         <th>Cruncher</th>
                         <th>Controller</th>
-
                     </tr>
                 </thead>
                 <tbody>
@@ -121,7 +120,7 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>
+              </table>
             </td>
         </tr>
     </tbody>
@@ -133,7 +132,7 @@
       <td colspan="2">
         <strong>Calibrate Servo Zero positions</strong>
       </td>
-    <tr>
+    </tr>
   </thead>
   <tbody>
     <tr>
