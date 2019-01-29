@@ -29,54 +29,57 @@ class CruncherMenu:
         Press Ctrl+C or select "Exit" to exit.
         """)
 
-        self.init_home_menu()
-        self.init_calibration_menu()
+        self.init_menus()
 
         width, height = lcd.dimensions()
         self.__lcdWidth = width
         self.__lcdHeight = height
         # A squarer pixel font
-        #font = ImageFont.truetype(fonts.BitocraFull, 11)
+        self.__font = ImageFont.truetype(fonts.BitocraFull, 11)
 
         # A slightly rounded, Ubuntu-inspired version of Bitocra
-        self.__font = ImageFont.truetype(fonts.BitbuntuFull, 10)
+        #self.__font = ImageFont.truetype(fonts.BitbuntuFull, 10)
 
         self.__image = Image.new('P', (width, height))
 
         self.__draw = ImageDraw.Draw(self.__image)
         atexit.register(self.cleanup)
 
-    def init_home_menu(self):
+    def init_menus(self):
         self.__home_options = [
             CruncherMenuOption('J2 Controller', None),
-            CruncherMenuOption('Servo Calibration', self.show_wheels_calibration),
+            CruncherMenuOption('Servo Calibration', self.show_wheels_calibration_menu),
             CruncherMenuOption('Exit', sys.exit, (0,))
         ]
-
-    def init_calibration_menu(self):
         self.__calibration_options = [
             CruncherMenuOption("Calibration Menu", None),
-            CruncherMenuOption("Configure servo indexes", None),
-            CruncherMenuOption("Front left Wheel", None),
-            CruncherMenuOption("Front right Wheel", None),
-            CruncherMenuOption("Rear left Wheel", None),
-            CruncherMenuOption("Rear right Wheel", None),
+            CruncherMenuOption("Servo indexes", self.show_servo_index_menu),
+            CruncherMenuOption("Servo Zero positions", self.show_zero_position_menu),
             CruncherMenuOption("Save current status", None),
-            CruncherMenuOption("Reload servo defaults", None),
             CruncherMenuOption("Set Actuation Angle", None),
+            CruncherMenuOption("Reload servo defaults", None),
             CruncherMenuOption("Back", self.set_menu_options)
         ]
-
-    def init_servo_index_menu(self):
         self.__servo_index_options = [
+            CruncherMenuOption("FL Wheel Index", None),
+            CruncherMenuOption("FR Wheel Index", None),
+            CruncherMenuOption("RL Wheel Index", None),
+            CruncherMenuOption("RR Wheel Index", None),
+            CruncherMenuOption("FS Index", None),
+            CruncherMenuOption("RS Index", None),
+            CruncherMenuOption("Back", self.show_wheels_calibration_menu),
+
+        ]
+        self.__servo_zero_position_options = [
             CruncherMenuOption("Front left Wheel", None),
             CruncherMenuOption("Front Right Wheel", None),
             CruncherMenuOption("Rear left Wheel", None),
             CruncherMenuOption("Rear right Wheel", None),
             CruncherMenuOption("Front Suspension", None),
             CruncherMenuOption("Rear Suspension", None),
-            CruncherMenuOption("Actuation angle", None),
+            CruncherMenuOption("Back", self.show_wheels_calibration_menu),
         ]
+
 
     def set_menu_options(self, menuOptions=None):
         if(menuOptions == None):
@@ -84,9 +87,14 @@ class CruncherMenu:
         else:
             self.__menu_options = menuOptions
 
-    def show_wheels_calibration(self):
+    def show_wheels_calibration_menu(self):
         self.set_menu_options(self.__calibration_options)
         # self.paint_screen()
+    def show_servo_index_menu(self):
+        self.set_menu_options(self.__servo_index_options)
+
+    def show_zero_position_menu(self):
+        self.set_menu_options(self.__servo_zero_position_options)
 
     def set_backlight(self, r, g, b):
         backlight.set_all(r, g, b)
