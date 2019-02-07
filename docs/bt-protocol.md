@@ -1,6 +1,7 @@
 # Commands for communication between J2 Cruncher and J2 Controller
 
-## Calibration Menu
+## Menus
+
 <table class="table">
     <thead>
         <tr>
@@ -261,7 +262,7 @@
   <thead>
     <tr>
       <th colspan="2">
-      Save current status
+      Current status
       </th>
     </tr>
     <tr>
@@ -279,6 +280,21 @@
       {<br>
         "cmd": "calibrate", <br>
         "action": "saveStatus"<br>
+        "data": null<br>
+      }<br>
+      </td>
+      <td>
+      {<br>
+        "res" : "OK",<br>
+        "data": [CurrentStatusJSON string]<br>
+      }<br>
+      </td>
+    </tr>
+    <tr>
+      <td>
+      {<br>
+        "cmd": "calibrate", <br>
+        "action": "getStatus"<br>
         "data": null<br>
       }<br>
       </td>
@@ -375,4 +391,37 @@
       </td>
     </tr>
   </tbody>
+</table>
+
+## Manual Control
+
+<table class="table">
+ <thead>
+  <tr>
+   <th colspan="2">Pi Noon Commands</th>
+  </tr>
+  <tr>
+   <th>Cruncher</th>
+   <th>Controller</th>
+  </tr>
+ </thead>
+ <tbody>
+  <tr>
+   <td>
+   ```json
+    {  
+     "cmd": "steering",
+     "action": "move",
+     "data": {
+         "speedLeft": [0-1],
+         "directionLeft": [1-0],
+         "speedRight": [0-1],
+         "directionRight": [1-0]
+     }
+    }
+    ```
+   </td>
+   <td></td>
+  </tr>
+ </tbody>
 </table>

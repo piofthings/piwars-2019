@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-
-import time
+import os
 import sys
+import time
 import atexit
+
+sys.path.append(os.path.abspath(os.path.join(
+    os.path.dirname(__file__), "services")))
 
 from gfxhat import touch, lcd, backlight, fonts
 from PIL import Image, ImageFont, ImageDraw
@@ -49,10 +52,11 @@ class CruncherMenu:
         self.__home_options = [
             CruncherMenuOption('J2 Controller', None),
             CruncherMenuOption('Servo Calibration', self.show_wheels_calibration_menu),
+            CruncherMenuOption('Events', self.show_events_menu)
             CruncherMenuOption('Exit', sys.exit, (0,))
         ]
         self.__calibration_options = [
-            CruncherMenuOption("Calibration Menu", None),
+            CruncherMenuOption("Servo Calibration", None),
             CruncherMenuOption("Servo indexes", self.show_servo_index_menu),
             CruncherMenuOption("Servo Zero positions", self.show_zero_position_menu),
             CruncherMenuOption("Save current status", None),
@@ -80,6 +84,17 @@ class CruncherMenu:
             CruncherMenuOption("Back", self.show_wheels_calibration_menu),
         ]
 
+        self.__events_menu_options = [
+            CruncherMenuOption("Events", None),
+            CruncherMenuOption("R:Space Invaders", None),
+            CruncherMenuOption("R:Pi Noon", None),
+            CruncherMenuOption("R:Spirit of Curiosity", None),
+            CruncherMenuOption("R:Apollo 13 Obstacles", None),
+            CruncherMenuOption("A:Blast off", None),
+            CruncherMenuOption("A:Hubble", None),
+            CruncherMenuOption("A:Canyon", None),
+            CruncherMenuOption("Back", self.set_menu_options)
+        ]
 
     def set_menu_options(self, menuOptions=None):
         if(menuOptions == None):
@@ -90,6 +105,7 @@ class CruncherMenu:
     def show_wheels_calibration_menu(self):
         self.set_menu_options(self.__calibration_options)
         # self.paint_screen()
+
     def show_servo_index_menu(self):
         self.set_menu_options(self.__servo_index_options)
 
@@ -126,43 +142,45 @@ class CruncherMenu:
 
         backlight.show()
         self.set_menu_options()
-        self.paint_screen()
+        self.__looper = True
+        while self.__looper:
+            self.paint_screen()
+            time.sleep(1.0 / 30)
 
     def paint_screen(self):
         try:
-            while True:
-                self.__image.paste(0, (0, 0, self.__lcdWidth, self.__lcdHeight))
-                offset_top = 0
+            self.__image.paste(0, (0, 0, self.__lcdWidth, self.__lcdHeight))
+            offset_top = 0
 
-                if self.__trigger_action:
-                    self.__menu_options[self.__current_menu_option].trigger()
-                    self.__trigger_action = False
+            if self.__trigger_action:
+                self.__menu_options[self.__current_menu_option].trigger()
+                self.__trigger_action = False
 
-                for index in range(len(self.__menu_options)):
-                    if index == self.__current_menu_option:
-                        break
-                    offset_top += 12
+            for index in range(len(self.__menu_options)):
+                if index == self.__current_menu_option:
+                    break
+                offset_top += 12
 
-                for index in range(len(self.__menu_options)):
-                    x = 10
-                    y = (index * 12) + (self.__lcdHeight / 2) - 4 - offset_top
-                    option = self.__menu_options[index]
-                    if index == self.__current_menu_option:
-                        self.__draw.rectangle(((x - 2, y - 1), (self.__lcdWidth, y + 10)), 1)
-                    self.__draw.text((x, y), option.name, 0 if index == self.__current_menu_option else 1, self.__font)
+            for index in range(len(self.__menu_options)):
+                x = 10
+                y = (index * 12) + (self.__lcdHeight / 2) - 4 - offset_top
+                option = self.__menu_options[index]
+                if index == self.__current_menu_option:
+                    self.__draw.rectangle(((x - 2, y - 1), (self.__lcdWidth, y + 10)), 1)
+                self.__draw.text((x, y), option.name, 0 if index == self.__current_menu_option else 1, self.__font)
 
-                w, h = self.__font.getsize('>')
-                self.__draw.text((0, (self.__lcdHeight - h) / 2), '>', 1, self.__font)
+            w, h = self.__font.getsize('>')
+            self.__draw.text((0, (self.__lcdHeight - h) / 2), '>', 1, self.__font)
 
-                for x in range(self.__lcdWidth):
-                    for y in range(self.__lcdHeight):
-                        pixel = self.__image.getpixel((x, y))
-                        lcd.set_pixel(x, y, pixel)
+            for x in range(self.__lcdWidth):
+                for y in range(self.__lcdHeight):
+                    pixel = self.__image.getpixel((x, y))
+                    lcd.set_pixel(x, y, pixel)
 
-                lcd.show()
-                time.sleep(1.0 / 30)
+            lcd.show()
 
         except KeyboardInterrupt:
+            self.__looper = False
             self.cleanup()
 
 

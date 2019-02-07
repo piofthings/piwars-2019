@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
-
+import os
+import sys
+import time
 import atexit
+
+sys.path.append(os.path.abspath(os.path.join(
+    os.path.dirname(__file__), "services")))
 
 from bluedot.btcomm import BluetoothServer
 from signal import pause
@@ -29,5 +34,6 @@ class J2Cruncher:
         self.__bt_server.send(data)
 
     def cleanup(self):
+        self.__bt_server = None
         pass
 # pause()

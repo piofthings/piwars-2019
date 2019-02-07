@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+"""
+Client steering.py
+
+"""
 import math
 import time
 import sys
