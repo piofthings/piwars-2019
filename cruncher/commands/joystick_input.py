@@ -5,68 +5,32 @@ import time
 import os
 import sys
 import pygame
-from dc_drive import DcDrive
 
 
 class JoystickController():
     # Settings for the joystick
-    axisUpDown = 1                          # Joystick axis to read for up / down position
+    __axisUpDown = 1                          # Joystick axis to read for up / down position
     # Set this to True if up and down appear to be swapped
-    axisUpDownInverted = False
+    __axisUpDownInverted = False
     # Joystick axis to read for left / right position
-    axisLeftRight = 2
+    __axisLeftRight = 2
     # Set this to True if left and right appear to be swapped
-    axisLeftRightInverted = False
-    # Joystick button number for driving slowly whilst held (L2)
-    buttonSlow = 6
+    __axisLeftRightInverted = False
+
     # Speed to slow to when the drive slowly button is held, e.g. 0.5 would be half speed
-    slowFactor = 0.5
+    __slowFactor = 0.5
+    # Joystick button number for driving slowly whilst held (L2)
+    __axisLeftRightInverted = 6
     # Joystick button number for turning fast (R2)
-    buttonFastTurn = 7
-
-    leftTrigger = 0
-    kickButton = 1
+    __buttonFastTurn = 7
+    __leftTrigger = 0
+    __kickButton = 1
     # Time between updates in seconds, smaller responds faster but uses more processor time
-    interval = 0.01
+    __interval = 1 / 100
 
-    # Power settings
-    voltageIn = 1.2 * 10                    # Total battery voltage to the ThunderBorg
-    # Maximum motor voltage, we limit it to 95% to allow the RPi to get uninterrupted power
-    voltageOut = 12.0 * 0.95
-
-    def __init__(self, dc_drive_instance):
+    def __init__(self):
         # Re-direct our output to standard error, we need to ignore standard out to hide some nasty print statements from pygame
         sys.stdout = sys.stderr
-
-        self.__dcd = dc_drive_instance
-
-        # failsafe = False
-        # for i in range(5):
-        #     self.__tb.SetCommsFailsafe(True)
-        #     failsafe = self.__tb.GetCommsFailsafe()
-        #     if failsafe:
-        #         break
-        # if not failsafe:
-        #     print('Board %02X failed to report in failsafe mode!' %
-        #           (self.__tb.i2cAddress))
-        #     sys.exit()
-
-        # Setup the power limits
-        # if self.voltageOut > self.voltageIn:
-        #     self.maxPower = 1.0
-        # else:
-        #     self.maxPower = self.voltageOut / float(self.voltageIn)
-        #
-        # # Show battery monitoring settings
-        # battMin, battMax = self.__tb.GetBatteryMonitoringLimits()
-        # battCurrent = self.__tb.GetBatteryReading()
-        # print('Battery monitoring settings:')
-        # print('    Minimum  (red)     %02.2f V' % (battMin))
-        # print('    Half-way (yellow)  %02.2f V' % ((battMin + battMax) / 2))
-        # print('    Maximum  (green)   %02.2f V' % (battMax))
-        # print('')
-        # print('    Current voltage    %02.2f V' % (battCurrent))
-        # print()
 
     def run(self):
         # Setup pygame and wait for the joystick to become available
@@ -91,18 +55,14 @@ class JoystickController():
                         break
                 except pygame.error:
                     # Failed to connect to the joystick, set LEDs blue
-                    # self.__tb.SetLeds(0, 0, 1)
                     pygame.joystick.quit()
                     time.sleep(0.1)
             except KeyboardInterrupt:
                 # CTRL+C exit, give up
                 print('\nUser aborted')
-                # self.__tb.SetCommsFailsafe(False)
-                # self.__tb.SetLeds(0, 0, 0)
                 sys.exit()
         print('Joystick found')
         joystick.init()
-        # self.__tb.SetLedShowBattery(True)
         ledBatteryMode = True
         try:
             print('Press CTRL+C to quit')
@@ -132,22 +92,22 @@ class JoystickController():
                         # A joystick has been moved
                         hadEvent = True
                     if hadEvent:
-                        if(joystick.get_button(self.leftTrigger)):
-                            print(joystick.get_button(self.leftTrigger))
+                        if(joystick.get_button(self.__leftTrigger)):
+                            print(joystick.get_button(self.__leftTrigger))
                             self.__ub.SetServoPosition3(-0.6)
-                        if(joystick.get_button(self.kickButton)):
+                        if(joystick.get_button(self.__kickButton)):
                             self.__ub.SetServoPosition3(0.7)
                         # Read axis positions (-1 to +1)
-                        if self.axisUpDownInverted:
-                            upDown = -joystick.get_axis(self.axisUpDown)
+                        if self.__axisUpDownInverted:
+                            upDown = -joystick.get_axis(self.__axisUpDown)
                         else:
-                            upDown = joystick.get_axis(self.axisUpDown)
-                        if self.axisLeftRightInverted:
-                            leftRight = -joystick.get_axis(self.axisLeftRight)
+                            upDown = joystick.get_axis(self.__axisUpDown)
+                        if self.__axisLeftRightInverted:
+                            leftRight = -joystick.get_axis(self.__axisLeftRight)
                         else:
-                            leftRight = joystick.get_axis(self.axisLeftRight)
+                            leftRight = joystick.get_axis(self.__axisLeftRight)
                         # Apply steering speeds
-                        if not joystick.get_button(self.buttonFastTurn):
+                        if not joystick.get_button(self.__buttonFastTurn):
                             leftRight *= 0.5
 
                         # Determine the drive power levels
@@ -160,24 +120,14 @@ class JoystickController():
                             # Turning right
                             driveRight *= 1.0 - (2.0 * leftRight)
                         # Check for button presses
-                        if joystick.get_button(self.buttonSlow):
-                            driveLeft *= self.slowFactor
-                            driveRight *= self.slowFactor
+                        if joystick.get_button(self.__axisLeftRightInverted):
+                            driveLeft *= self.__slowFactor
+                            driveRight *= self.__slowFactor
                         # Set the motors to the new speeds
                         # self.__tb.SetMotor1(driveRight * self.maxPower)
                         # self.__tb.SetMotor2(driveLeft * self.maxPower)
-                # Change LEDs to purple to show motor faults
-                # if self.__tb.GetDriveFault1() or self.__tb.GetDriveFault2():
-                    # if ledBatteryMode:
-                        # self.__tb.SetLedShowBattery(False)
-                        # self.__tb.SetLeds(1, 0, 1)
-                        # ledBatteryMode = False
-                # else:
-                    # if not ledBatteryMode:
-                        # self.__tb.SetLedShowBattery(True)
-                        # ledBatteryMode = True
-                # Wait for the interval period
-                time.sleep(self.interval)
+                # Wait for the __interval period
+                time.sleep(self.__interval)
             # Disable all drives
             # self.__tb.MotorsOff()
         except KeyboardInterrupt:

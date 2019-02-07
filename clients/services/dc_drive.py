@@ -5,6 +5,9 @@ from time import sleep
 
 
 class DcDrive():
+    DIRECTION_FORWARD = 1
+    DIRECTION_BACKWARD = 0
+
     __pwmEnablePinWhiteLeftChannel = 12
     __phaseDirPinRedLeftChannel = 5
     __pwmEnablePinWhiteRightChannel = 13
@@ -17,21 +20,35 @@ class DcDrive():
 
     __currentSpeed = 0
 
-    def setSpeed(self, newSpeed):
-        if newSpeed >= 0 and newSpeed <= 1:
-            self.__currentSpeed = newSpeed
+    def setDirection(self, leftDirection, rightDirection):
+        self.__currentLeftDirection = leftDirection
+        self.__currentRightDirection = rightDirection
 
     def moveForward(self, newSpeed):
         if newSpeed >= 0 and newSpeed <= 1:
-            self.setSpeed(newSpeed)
+            self.setDirection(self.DIRECTION_FORWARD, self.DIRECTION_FORWARD)
             self.__rightMotors.forward(speed)
             self.__leftMotors.forward(speed)
 
-    def moveForward(self, newSpeed):
+    def moveBackward(self, newSpeed):
         if newSpeed >= 0 and newSpeed <= 1:
-            self.setSpeed(newSpeed)
+            self.setSpeed(self.DIRECTION_BACKWARD, self.DIRECTION_BACKWARD)
             self.__rightMotors.backward(speed)
             self.__leftMotors.backward(speed)
+
+    def move(self, directionLeft, directionRight, speedLeft, speedRight):
+        self.setDirection(directionLeft, directionRight)
+        if (speedLeft >= 0 & & speedRight >= 0 & &
+                speedLeft <= 1 & & speedRight <= 1):
+            if(directionLeft == self.DIRECTION_FORWARD):
+                self.__leftMotors.forward(speedLeft)
+            elif(directionLeft == self.DIRECTION_BACKWARD):
+                self.__leftMotors.backward(speedLeft)
+
+            if(directionRight == self.DIRECTION_FORWARD):
+                self.__rightMotors.forward(speedRight)
+            elif(directionRight == self.DIRECTION_BACKWARD)
+                self.__rightMotors.backward(speedRight)
 
     def stop(self):
         self.setSpeed(0)

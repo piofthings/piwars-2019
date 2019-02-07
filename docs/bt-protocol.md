@@ -13,16 +13,16 @@
     <tbody>
         <tr>
          <td>
-            { <br>
-                "cmd": "calibrate", <br>
-                "action": "servoIndex", <br>
-                "data": "init" <br>
+            {   
+                "cmd": "calibrate",   
+                "action": "servoIndex",   
+                "data": "init"   
             }
          </td>
          <td>
-            { <br>
-                "res": "OK" <br>
-                "data": null <br>
+            {   
+                "res": "OK"   
+                "data": null   
             }
          </td>
         </tr>
@@ -38,85 +38,85 @@
                 <tbody>
                     <tr>
                          <td>
-                            { <br>
-                                "cmd": "calibrate" <br>
-                                "action": "setupFrontLeft", <br>
-                                "data": [0 - 15] <br>
+                            {   
+                                "cmd": "calibrate"   
+                                "action": "setupFrontLeft",   
+                                "data": [0 - 15]   
                             }
                          </td>
                          <td>
-                             { <br>
-                                 "res": "OK", <br>
+                             {   
+                                 "res": "OK",   
                              }
                          </td>
                      </tr>
                      <tr>
                         <td>
-                           { <br>
-                               "cmd": "calibrate" <br>
-                               "action": "setupFrontRight", <br>
-                               "data": [0 - 15] <br>
+                           {   
+                               "cmd": "calibrate"   
+                               "action": "setupFrontRight",   
+                               "data": [0 - 15]   
                            }
                         </td>
                         <td>
-                            { <br>
-                                "res": "OK", <br>
+                            {   
+                                "res": "OK",   
                             }
                         </td>
                         </tr>
                         <tr>
                             <td>
-                               { <br>
-                                   "cmd": "calibrate" <br>
-                                   "action": "setupRearLeft", <br>
-                                   "data": [0 - 15] <br>
+                               {   
+                                   "cmd": "calibrate"   
+                                   "action": "setupRearLeft",   
+                                   "data": [0 - 15]   
                                }
                             </td>
                             <td>
-                                { <br>
-                                    "res": "OK", <br>
+                                {   
+                                    "res": "OK",   
                                 }
                             </td>
                         </tr>
                         <tr>
                             <td>
-                               { <br>
-                                   "cmd": "calibrate" <br>
-                                   "action": "setupRearRight", <br>
-                                   "data": [0 - 15] <br>
+                               {   
+                                   "cmd": "calibrate"   
+                                   "action": "setupRearRight",   
+                                   "data": [0 - 15]   
                                }
                             </td>
                             <td>
-                                { <br>
-                                    "res": "OK", <br>
+                                {   
+                                    "res": "OK",   
                                 }
                             </td>
                         </tr>
                         <tr>
                             <td>
-                               { <br>
-                                   "cmd": "calibrate" <br>
-                                   "action": "setupSuspensionFront", <br>
-                                   "data": [0 - 15] <br>
+                               {   
+                                   "cmd": "calibrate"   
+                                   "action": "setupSuspensionFront",   
+                                   "data": [0 - 15]   
                                }
                             </td>
                             <td>
-                                { <br>
-                                    "res": "OK", <br>
+                                {   
+                                    "res": "OK",   
                                 }
                             </td>
                         </tr>
                         <tr>
                             <td>
-                               { <br>
-                                   "cmd": "calibrate" <br>
-                                   "action": "setupSuspnesionRear", <br>
-                                   "data": [0 - 15] <br>
+                               {   
+                                   "cmd": "calibrate"   
+                                   "action": "setupSuspnesionRear",   
+                                   "data": [0 - 15]   
                                }
                             </td>
                             <td>
-                                { <br>
-                                    "res": "OK", <br>
+                                {   
+                                    "res": "OK",   
                                 }
                             </td>
                         </tr>
@@ -138,16 +138,16 @@
   <tbody>
     <tr>
        <td>
-          { <br>
-              "cmd": "calibrate", <br>
-              "action": "servoIndex", <br>
-              "data": "init" <br>
+          {   
+              "cmd": "calibrate",   
+              "action": "servoIndex",   
+              "data": "init"   
           }
        </td>
        <td>
-          { <br>
-              "res": "OK" <br>
-              "data": null <br>
+          {   
+              "res": "OK"   
+              "data": null   
           }
        </td>
     </tr>
@@ -163,91 +163,91 @@
           <tbody>
             <tr>
               <td>
-                      { <br>
-                          "cmd": "calibrate" <br>
-                          "action": "frontLeftZero", <br>
-                          "data": [0 - 160] <br>
+                      {   
+                          "cmd": "calibrate"   
+                          "action": "frontLeftZero",   
+                          "data": [0 - 160]   
                       }
               </td>
               <td>
-                       { <br>
-                           "res": "OK", <br>
-                           "data": [currentPosition] <br>
+                       {   
+                           "res": "OK",   
+                           "data": [currentPosition]   
                        }
               </td>
             </tr>
             <tr>
               <td>
-                 { <br>
-                     "cmd": "calibrate" <br>
-                     "action": "frontRightZero", <br>
-                     "data": [0 - 160] <br>
+                 {   
+                     "cmd": "calibrate"   
+                     "action": "frontRightZero",   
+                     "data": [0 - 160]   
                  }
               </td>
               <td>
-                  { <br>
-                      "res": "OK", <br>
-                      "data": [currentPosition] <br>
+                  {   
+                      "res": "OK",   
+                      "data": [currentPosition]   
                   }
               </td>
             </tr>
             <tr>
               <td>
-                 { <br>
-                     "cmd": "calibrate" <br>
-                     "action": "rearLeftZero", <br>
-                     "data": [0 - 160] <br>
+                 {   
+                     "cmd": "calibrate"   
+                     "action": "rearLeftZero",   
+                     "data": [0 - 160]   
                  }
               </td>
               <td>
-                  { <br>
-                      "res": "OK", <br>
-                      "data": [currentPosition] <br>
+                  {   
+                      "res": "OK",   
+                      "data": [currentPosition]   
                   }
               </td>
             </tr>
             <tr>
                 <td>
-                   { <br>
-                       "cmd": "calibrate" <br>
-                       "action": "rearRightZero", <br>
-                       "data": [0 - 160] <br>
+                   {   
+                       "cmd": "calibrate"   
+                       "action": "rearRightZero",   
+                       "data": [0 - 160]   
                    }
                 </td>
                 <td>
-                    { <br>
-                        "res": "OK", <br>
-                        "data": [currentPosition] <br>
+                    {   
+                        "res": "OK",   
+                        "data": [currentPosition]   
                     }
                 </td>
             </tr>
             <tr>
                 <td>
-                   { <br>
-                       "cmd": "calibrate" <br>
-                       "action": "suspensionFrontZero", <br>
-                       "data": [0 - 160] <br>
+                   {   
+                       "cmd": "calibrate"   
+                       "action": "suspensionFrontZero",   
+                       "data": [0 - 160]   
                    }
                 </td>
                 <td>
-                    { <br>
-                        "res": "OK", <br>
-                        "data": [currentPosition] <br>
+                    {   
+                        "res": "OK",   
+                        "data": [currentPosition]   
                     }
                 </td>
             </tr>
             <tr>
                 <td>
-                   { <br>
-                       "cmd": "calibrate" <br>
-                       "action": "suspensionRearZero", <br>
-                       "data": [0 - 160] <br>
+                   {   
+                       "cmd": "calibrate"   
+                       "action": "suspensionRearZero",   
+                       "data": [0 - 160]   
                    }
                 </td>
                 <td>
-                    { <br>
-                        "res": "OK", <br>
-                        "data": [currentPosition] <br>
+                    {   
+                        "res": "OK",   
+                        "data": [currentPosition]   
                     }
                 </td>
             </tr>
@@ -278,7 +278,7 @@
     <tr>
       <td>
       {<br>
-        "cmd": "calibrate", <br>
+        "cmd": "calibrate",   
         "action": "saveStatus"<br>
         "data": null<br>
       }<br>
@@ -293,7 +293,7 @@
     <tr>
       <td>
       {<br>
-        "cmd": "calibrate", <br>
+        "cmd": "calibrate",   
         "action": "getStatus"<br>
         "data": null<br>
       }<br>
@@ -408,20 +408,84 @@
  <tbody>
   <tr>
    <td>
-   ```json
     {  
-     "cmd": "steering",
-     "action": "move",
-     "data": {
-         "speedLeft": [0-1],
-         "directionLeft": [1-0],
-         "speedRight": [0-1],
-         "directionRight": [1-0]
-     }
+     "cmd": "steering",  
+     "action": "move",  
+     "data": {  
+         "speedLeft": [0-1],  
+         "directionLeft": [1-0],  
+         "speedRight": [0-1],  
+         "directionRight": [1-0]  
+     }  
     }
-    ```
    </td>
-   <td></td>
+   <td>
+    {  
+        "res": "OK",  
+        "data": None  
+    }  
+   </td>
   </tr>
+  <tr>
+   <td>
+   {  
+    "cmd": "wheels",  
+    "action": "strafe",  
+    "data": "left30"  
+   }
+   </td>
+   <td>
+   {  
+       "res": "OK",  
+       "data": None  
+   }
+   </td>
+  </tr>
+  <tr>
+   <td>
+   {  
+    "cmd": "wheels",  
+    "action": "strafe",  
+    "data": "right30"   
+   }
+   </td>
+   <td>
+   {  
+       "res": "OK",  
+       "data": None  
+   }
+   </td>
+  </tr>
+  <tr>
+   <td>
+   {  
+    "cmd": "wheels",  
+    "action": "strafe",  
+    "data": "sideways"  
+   }  
+   </td>
+   <td>
+   {  
+       "res": "OK",  
+       "data": None  
+   }
+   </td>
+  </tr>
+  <tr>
+   <td>
+   {  
+    "cmd": "wheels",  
+    "action": "strafe",  
+    "data": "none"  
+   }  
+   </td>
+   <td>
+   {  
+       "res": "OK",  
+       "data": None  
+   }
+   </td>
+  </tr>
+
  </tbody>
 </table>

@@ -2,7 +2,7 @@ import json
 from serialisable_base import SerialisableBase
 
 
-class BtCommand(SerialisableBase):
+class BtRequest(SerialisableBase):
     cmd = ""
     action = ""
     data = ""

@@ -19,9 +19,7 @@ class CruncherMenu:
     __lcdHeight = 0
     __menu_options = []
     __home_options = None
-
     __calibration_options = None
-
     __current_menu_option = 1
     __trigger_action = False
 
