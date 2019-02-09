@@ -16,15 +16,21 @@ from cruncher_menu_option import CruncherMenuOption
 
 class J2Cruncher:
     __bt_server = None
+    __cruncher_menu = None
     __looper = True
 
     def __init__(sef):
         self.__bt_server = BluetoothServer(self.data_received)
+        self.__cruncher_menu = CruncherMenu()
         atexit.register(self.cleanup)
 
     def run(self):
+        self.__cruncher_menu.init_screen()
         try:
             while __looper:
+                self.__cruncher_menu.paint_screen()
+                # if(self.__cruncher_menu.selected_command != None):
+                #     self.__selected_command.start()
                 time.sleep(1.0 / 60)
         except KeyboardInterrupt:
             self.cleanup()

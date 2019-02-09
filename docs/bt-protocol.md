@@ -277,32 +277,32 @@
   <tbody>
     <tr>
       <td>
-      {<br>
+      {  
         "cmd": "calibrate",   
-        "action": "saveStatus"<br>
-        "data": null<br>
-      }<br>
+        "action": "saveStatus"  
+        "data": null  
+      }  
       </td>
       <td>
-      {<br>
-        "res" : "OK",<br>
-        "data": [CurrentStatusJSON string]<br>
-      }<br>
+      {  
+        "res" : "OK",  
+        "data": [CurrentStatusJSON string]  
+      }  
       </td>
     </tr>
     <tr>
       <td>
-      {<br>
+      {  
         "cmd": "calibrate",   
-        "action": "getStatus"<br>
-        "data": null<br>
-      }<br>
+        "action": "getStatus"  
+        "data": null  
+      }  
       </td>
       <td>
-      {<br>
-        "res" : "OK",<br>
-        "data": [CurrentStatusJSON string]<br>
-      }<br>
+      {  
+        "res" : "OK",  
+        "data": [CurrentStatusJSON string]  
+      }  
       </td>
     </tr>
   </tbody>
@@ -327,32 +327,32 @@
   <tbody>
     <tr>
       <td>
-      {<br>
-        "cmd": "calibrate",<br>
-        "action": "setSteeringActuationAngle",<br>
-        "data": [0 - 160]<br>
-        }<br>
+      {  
+        "cmd": "calibrate",  
+        "action": "setSteeringActuationAngle",  
+        "data": [0 - 160]  
+        }  
       </td>
       <td>
-      {<br>
-        "res" : "OK",<br>
-        "data": [CurrentStatusJSON string]<br>
-      }<br>
+      {  
+        "res" : "OK",  
+        "data": [CurrentStatusJSON string]  
+      }  
       </td>
     </tr>
     <tr>
       <td>
-      {<br>
-        "cmd": "calibrate",<br>
-        "action": "setSuspensionActuationAngle",<br>
-        "data": [0 - 160]<br>
-        }<br>
+      {  
+        "cmd": "calibrate",  
+        "action": "setSuspensionActuationAngle",  
+        "data": [0 - 160]  
+        }  
         </td>
       <td>
-      {<br>
-        "res" : "OK",<br>
-        "data": [CurrentStatusJSON string]<br>
-      }<br>
+      {  
+        "res" : "OK",  
+        "data": [CurrentStatusJSON string]  
+      }  
       </td>
     </tr>
   </tbody>
@@ -377,17 +377,17 @@
   <tbody>
     <tr>
       <td>
-      {<br>
-      "cmd": "calibrate",<br>
-      "action": "reloadStatus",<br>
-      "data": None<br>
-      }<br>
+      {  
+      "cmd": "calibrate",  
+      "action": "reloadStatus",  
+      "data": None  
+      }  
       </td>
       <td>
-      {<br>
-      "res" : "OK",<br>
-      "data": [CurrentStatusJSON string]<br>
-      }<br>
+      {  
+      "res" : "OK",  
+      "data": [CurrentStatusJSON string]  
+      }  
       </td>
     </tr>
   </tbody>

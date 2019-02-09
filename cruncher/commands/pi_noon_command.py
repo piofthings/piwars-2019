@@ -4,13 +4,13 @@ from joystick_input import JoystickController
 
 class PiNoonCommand(BaseCommand):
     """PiNoon Command to handle Pi Noon challenge"""
-    __looper = False
+    __joystick_input = None
 
-    def __init__(self, arg):
+    def __init__(self, arg=None):
         super().__init__()
         self.arg = arg
+        self.__joystick_input = JoystickInput()
 
-    def start():
+    def poll(self):
         self.running = True
-        self.__looper = True
-        while self.__looper:
+        self.__joystick_input.run()

@@ -42,5 +42,4 @@ class DcDrive():
 
     def stop(self):
         self.setSpeed(0)
-        self.__rightMotors.forward(0)
-        self.__leftMotors.forward(0)
+        pz.stop(0)

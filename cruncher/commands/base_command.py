@@ -8,7 +8,7 @@ class BaseCommand(object):
     def __init__(self, arg):
         self.arg = arg
 
-    def start(self):
+    def poll(self):
         running = True
         pass
 

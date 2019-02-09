@@ -6,10 +6,13 @@ import atexit
 
 sys.path.append(os.path.abspath(os.path.join(
     os.path.dirname(__file__), "services")))
+sys.path.append(os.path.abspath(os.path.join(
+    os.path.dirname(__file__), "commands")))
 
 from gfxhat import touch, lcd, backlight, fonts
 from PIL import Image, ImageFont, ImageDraw
 from cruncher_menu_option import CruncherMenuOption
+from pi_noon_command import PiNoonCommand
 
 
 class CruncherMenu:
@@ -48,50 +51,50 @@ class CruncherMenu:
 
     def init_menus(self):
         self.__home_options = [
-            CruncherMenuOption('J2 Controller', None),
-            CruncherMenuOption('Servo Calibration', self.show_wheels_calibration_menu),
-            CruncherMenuOption('Events', self.show_events_menu)
-            CruncherMenuOption('Exit', sys.exit, (0,))
+            CruncherMenuOption('home_title', 'J2 Controller', None),
+            CruncherMenuOption('home_servo_calibration', 'Servo Calibration', self.show_wheels_calibration_menu),
+            CruncherMenuOption('home_servo_events', 'Events', self.show_events_menu),
+            CruncherMenuOption('home_exit', 'Exit', sys.exit, (0,))
         ]
         self.__calibration_options = [
-            CruncherMenuOption("Servo Calibration", None),
-            CruncherMenuOption("Servo indexes", self.show_servo_index_menu),
-            CruncherMenuOption("Servo Zero positions", self.show_zero_position_menu),
-            CruncherMenuOption("Save current status", None),
-            CruncherMenuOption("Set Actuation Angle", None),
-            CruncherMenuOption("Reload servo defaults", None),
-            CruncherMenuOption("Back", self.set_menu_options)
+            CruncherMenuOption("sc_title", "Servo Calibration", None),
+            CruncherMenuOption("sc_servo_indexs", "Servo indexes", self.show_servo_index_menu),
+            CruncherMenuOption("sc_servo_zero", "Servo Zero positions", self.show_zero_position_menu),
+            CruncherMenuOption("sc_save_current_status", "Save current status", None),
+            CruncherMenuOption("sc_set_actuation_angle", "Set Actuation Angle", None),
+            CruncherMenuOption("sc_reload_servo_defaults", "Reload servo defaults", None),
+            CruncherMenuOption("sc_back", "Back", self.set_menu_options)
         ]
         self.__servo_index_options = [
-            CruncherMenuOption("FL Wheel Index", None),
-            CruncherMenuOption("FR Wheel Index", None),
-            CruncherMenuOption("RL Wheel Index", None),
-            CruncherMenuOption("RR Wheel Index", None),
-            CruncherMenuOption("FS Index", None),
-            CruncherMenuOption("RS Index", None),
-            CruncherMenuOption("Back", self.show_wheels_calibration_menu),
+            CruncherMenuOption("wi_fl_wheel_index", "FL Wheel Index", None),
+            CruncherMenuOption("wi_fr_wheel_index", "FR Wheel Index", None),
+            CruncherMenuOption("wi_rl_wheel_index", "RL Wheel Index", None),
+            CruncherMenuOption("wi_rr_wheel_index", "RR Wheel Index", None),
+            CruncherMenuOption("wi_fs_index", "FS Index", None),
+            CruncherMenuOption("wi_rs_index", "RS Index", None),
+            CruncherMenuOption("wi_back", "Back", self.show_wheels_calibration_menu),
 
         ]
         self.__servo_zero_position_options = [
-            CruncherMenuOption("Front left Wheel", None),
-            CruncherMenuOption("Front Right Wheel", None),
-            CruncherMenuOption("Rear left Wheel", None),
-            CruncherMenuOption("Rear right Wheel", None),
-            CruncherMenuOption("Front Suspension", None),
-            CruncherMenuOption("Rear Suspension", None),
-            CruncherMenuOption("Back", self.show_wheels_calibration_menu),
+            CruncherMenuOption("wc_flw", "Front left Wheel", None),
+            CruncherMenuOption("wc_frw", "Front Right Wheel", None),
+            CruncherMenuOption("wc_rlw", "Rear left Wheel", None),
+            CruncherMenuOption("wc_rrw", "Rear right Wheel", None),
+            CruncherMenuOption("wc_fs", "Front Suspension", None),
+            CruncherMenuOption("wc_rs", "Rear Suspension", None),
+            CruncherMenuOption("wc_back", "Back", self.show_wheels_calibration_menu),
         ]
 
         self.__events_menu_options = [
-            CruncherMenuOption("Events", None),
-            CruncherMenuOption("R:Space Invaders", None),
-            CruncherMenuOption("R:Pi Noon", None),
-            CruncherMenuOption("R:Spirit of Curiosity", None),
-            CruncherMenuOption("R:Apollo 13 Obstacles", None),
-            CruncherMenuOption("A:Blast off", None),
-            CruncherMenuOption("A:Hubble", None),
-            CruncherMenuOption("A:Canyon", None),
-            CruncherMenuOption("Back", self.set_menu_options)
+            CruncherMenuOption("ev_title", "Events", None),
+            CruncherMenuOption("ev_space_invaders", "R:Space Invaders", None),
+            CruncherMenuOption("ev_pi_noon", "R:Pi Noon", self.invoke_pi_noon_command),
+            CruncherMenuOption("ev_spirit", "R:Spirit of Curiosity", None),
+            CruncherMenuOption("ev_obstacles", "R:Apollo 13 Obstacles", None),
+            CruncherMenuOption("ev_blastoff", "A:Blast off", None),
+            CruncherMenuOption("ev_hubble", "A:Hubble", None),
+            CruncherMenuOption("ev_canyon", "A:Canyon", None),
+            CruncherMenuOption("ev_back", "Back", self.set_menu_options)
         ]
 
     def set_menu_options(self, menuOptions=None):
@@ -126,17 +129,22 @@ class CruncherMenu:
             self.__trigger_action = True
         self.__current_menu_option %= len(self.__menu_options)
 
+    def invoke_pi_noon_command(self):
+
     def cleanup(self):
         backlight.set_all(0, 0, 0)
         backlight.show()
         lcd.clear()
         lcd.show()
 
-    def run(self):
+    def init_screen():
         for x in range(6):
             touch.set_led(x, 0)
             backlight.set_pixel(x, 255, 255, 255)
             touch.on(x, self.handler)
+
+    def run(self):
+        self.init_screen()
 
         backlight.show()
         self.set_menu_options()
