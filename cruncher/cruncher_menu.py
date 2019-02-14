@@ -28,6 +28,9 @@ class CruncherMenu:
 
     __looper = False
 
+    current_menu_name = ""
+    previous_menu_name = ""
+
     def __init__(self):
         print("""
         Press Ctrl+C or select "Exit" to exit.
@@ -57,44 +60,44 @@ class CruncherMenu:
             CruncherMenuOption('home_exit', 'Exit', sys.exit, (0,))
         ]
         self.__calibration_options = [
-            CruncherMenuOption("sc_title", "Servo Calibration", None),
-            CruncherMenuOption("sc_servo_indexs", "Servo indexes", self.show_servo_index_menu),
-            CruncherMenuOption("sc_servo_zero", "Servo Zero positions", self.show_zero_position_menu),
-            CruncherMenuOption("sc_save_current_status", "Save current status", None),
-            CruncherMenuOption("sc_set_actuation_angle", "Set Actuation Angle", None),
-            CruncherMenuOption("sc_reload_servo_defaults", "Reload servo defaults", None),
-            CruncherMenuOption("sc_back", "Back", self.set_menu_options)
+            CruncherMenuOption("sc_title",                  "Servo Calibration", None),
+            CruncherMenuOption("sc_servo_indexs",           "Servo indexes", self.show_servo_index_menu),
+            CruncherMenuOption("sc_servo_zero",             "Servo Zero positions", self.show_zero_position_menu),
+            CruncherMenuOption("sc_save_current_status",    "Save current status", None),
+            CruncherMenuOption("sc_set_actuation_angle",    "Set Actuation Angle", None),
+            CruncherMenuOption("sc_reload_servo_defaults",  "Reload servo defaults", None),
+            CruncherMenuOption("sc_back",                   "Back", self.set_menu_options)
         ]
         self.__servo_index_options = [
             CruncherMenuOption("wi_fl_wheel_index", "FL Wheel Index", None),
             CruncherMenuOption("wi_fr_wheel_index", "FR Wheel Index", None),
             CruncherMenuOption("wi_rl_wheel_index", "RL Wheel Index", None),
             CruncherMenuOption("wi_rr_wheel_index", "RR Wheel Index", None),
-            CruncherMenuOption("wi_fs_index", "FS Index", None),
-            CruncherMenuOption("wi_rs_index", "RS Index", None),
-            CruncherMenuOption("wi_back", "Back", self.show_wheels_calibration_menu),
+            CruncherMenuOption("wi_fs_index",       "FS Index", None),
+            CruncherMenuOption("wi_rs_index",       "RS Index", None),
+            CruncherMenuOption("wi_back",           "Back", self.show_wheels_calibration_menu),
 
         ]
         self.__servo_zero_position_options = [
-            CruncherMenuOption("wc_flw", "Front left Wheel", None),
-            CruncherMenuOption("wc_frw", "Front Right Wheel", None),
-            CruncherMenuOption("wc_rlw", "Rear left Wheel", None),
-            CruncherMenuOption("wc_rrw", "Rear right Wheel", None),
-            CruncherMenuOption("wc_fs", "Front Suspension", None),
-            CruncherMenuOption("wc_rs", "Rear Suspension", None),
-            CruncherMenuOption("wc_back", "Back", self.show_wheels_calibration_menu),
+            CruncherMenuOption("wc_flw",    "Front left Wheel", None),
+            CruncherMenuOption("wc_frw",    "Front Right Wheel", None),
+            CruncherMenuOption("wc_rlw",    "Rear left Wheel", None),
+            CruncherMenuOption("wc_rrw",    "Rear right Wheel", None),
+            CruncherMenuOption("wc_fs",     "Front Suspension", None),
+            CruncherMenuOption("wc_rs",     "Rear Suspension", None),
+            CruncherMenuOption("wc_back",   "Back", self.show_wheels_calibration_menu),
         ]
 
         self.__events_menu_options = [
-            CruncherMenuOption("ev_title", "Events", None),
+            CruncherMenuOption("ev_title",          "Events", None),
             CruncherMenuOption("ev_space_invaders", "R:Space Invaders", None),
-            CruncherMenuOption("ev_pi_noon", "R:Pi Noon", self.invoke_pi_noon_command),
-            CruncherMenuOption("ev_spirit", "R:Spirit of Curiosity", None),
-            CruncherMenuOption("ev_obstacles", "R:Apollo 13 Obstacles", None),
-            CruncherMenuOption("ev_blastoff", "A:Blast off", None),
-            CruncherMenuOption("ev_hubble", "A:Hubble", None),
-            CruncherMenuOption("ev_canyon", "A:Canyon", None),
-            CruncherMenuOption("ev_back", "Back", self.set_menu_options)
+            CruncherMenuOption("ev_pi_noon",        "R:Pi Noon", self.invoke_pi_noon_command),
+            CruncherMenuOption("ev_spirit",         "R:Spirit of Curiosity", None),
+            CruncherMenuOption("ev_obstacles",      "R:Apollo 13 Obstacles", None),
+            CruncherMenuOption("ev_blastoff",       "A:Blast off", None),
+            CruncherMenuOption("ev_hubble",         "A:Hubble", None),
+            CruncherMenuOption("ev_canyon",         "A:Canyon", None),
+            CruncherMenuOption("ev_back",           "Back", self.set_menu_options)
         ]
 
     def set_menu_options(self, menuOptions=None):
@@ -119,6 +122,8 @@ class CruncherMenu:
 
     def handler(self, ch, event):
         # global
+        self.previous_menu_name = self.__menu_options[self.__current_menu_option].name
+
         if event != 'press':
             return
         if ch == 1:
@@ -127,9 +132,12 @@ class CruncherMenu:
             self.__current_menu_option -= 1
         if ch == 4:
             self.__trigger_action = True
+
         self.__current_menu_option %= len(self.__menu_options)
+        self.current_menu_name = self.__menu_options[self.__current_menu_option].name
 
     def invoke_pi_noon_command(self):
+        pass
 
     def cleanup(self):
         backlight.set_all(0, 0, 0)
@@ -173,7 +181,7 @@ class CruncherMenu:
                 option = self.__menu_options[index]
                 if index == self.__current_menu_option:
                     self.__draw.rectangle(((x - 2, y - 1), (self.__lcdWidth, y + 10)), 1)
-                self.__draw.text((x, y), option.name, 0 if index == self.__current_menu_option else 1, self.__font)
+                self.__draw.text((x, y), option.label, 0 if index == self.__current_menu_option else 1, self.__font)
 
             w, h = self.__font.getsize('>')
             self.__draw.text((0, (self.__lcdHeight - h) / 2), '>', 1, self.__font)

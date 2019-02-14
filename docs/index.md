@@ -26,7 +26,7 @@ I can't think of if the Cruncher or the Controller will trigger our Laser guided
 3. Start BNO055 sensor service
 4. Start GFX Hat service
 5. Show Menu on GFX HAT and wait for response
-    - Loop 30 times per second
+    - Loop 60 times per second
         - If Mode = Calibrate Servos
             - Show Calibration Menu and wait in same event loop  
                 1. c: Configure wheel indexes (On Adafruit PWM Board)

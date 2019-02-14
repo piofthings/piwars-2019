@@ -4,7 +4,7 @@ import piconzero as pz
 from time import sleep
 
 
-class DcDrive():
+class PiconzeroDrive():
     DIRECTION_FORWARD = 1
     DIRECTION_BACKWARD = 0
 

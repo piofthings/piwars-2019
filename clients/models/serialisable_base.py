@@ -18,8 +18,8 @@ class SerialisableBase:
             self.deserialise(s)
 
     def deserialise(self, json_dict):
+        print("Field", "| Value")
         for field, value in json_dict.items():
-            print("Field", "| Value")
             print(field, value)
             self.__dict__[
                 field] = None if field not in json_dict else json_dict[field]
@@ -37,6 +37,6 @@ class SerialisableBase:
         if self.__json_file != None:
             file_object = open(self.__json_file, 'w+')
             s = json.dump(self, file_object, default=self.serialise)
+
         else:
-            print(
-                "Serialization error: Please provide destination either in constructor or Save")
+            print("Serialization error: Please provide destination either in constructor or Save")

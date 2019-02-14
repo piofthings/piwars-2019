@@ -14,9 +14,11 @@ from adafruit_servokit import ServoKit
 sys.path.append(os.path.abspath(os.path.join(
     os.path.dirname(__file__), "..")) + "/models/")
 from steering_status import SteeringStatus
+from bt_steering_mode_data import BtSteeringModeData
+from bt_request import BtRequest
 
 
-class Steering:
+class Steering():
     FRONT_LEFT_POS = 1
     FRONT_RIGHT_POS = 2
     REAR_LEFT_POS = 3

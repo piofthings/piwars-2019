@@ -28,8 +28,44 @@ class JoystickInput():
     # Time between updates in seconds, smaller responds faster but uses more processor time
     __interval = 1 / 100
 
-    driveLeft = 0
-    driveRight = 0
+    # driveLeft = 0
+    # driveRight = 0
+
+    @property
+    def driveRight(self):
+        """I'm the 'driveLeft' property."""
+        return self.driveRight
+
+    @driveRight.setter
+    def driveRight(self, value):
+        self.driveRight = value
+
+    @property
+    def driveLeft(self):
+        """I'm the 'driveLeft' property."""
+        return self.driveLeft
+
+    @driveLeft.setter
+    def driveLeft(self, value):
+        self.driveLeft = value
+
+    @property
+    def directionLeft(self):
+        """I'm the 'driveLeft' property."""
+        return self._direction
+
+    @directionLeft.setter
+    def directionLeft(self, value):
+        self._direction = value
+
+    @property
+    def enabled(self):
+        """I'm the 'x' property."""
+        return self._enabled
+
+    @enabled.setter
+    def enabled(self, value):
+        self._enabled = value
 
     def __init__(self):
         # Re-direct our output to standard error, we need to ignore standard out to hide some nasty print statements from pygame

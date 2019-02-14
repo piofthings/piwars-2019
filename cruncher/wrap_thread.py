@@ -1,6 +1,6 @@
 # "Inspired" from Martin O'Hanlon's Blue Dot library https://github.com/martinohanlon/BlueDot/blob/master/bluedot/threads.py
 # Other references GPIOZero https://github.com/RPi-Distro/python-gpiozero/blob/master/gpiozero/threads.py
-# Original (MIT) licenses apply
+# Original MIT licenses apply
 
 import atexit
 from threading import Thread, Event

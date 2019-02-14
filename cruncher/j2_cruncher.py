@@ -17,6 +17,7 @@ from cruncher_menu_option import CruncherMenuOption
 class J2Cruncher:
     __bt_server = None
     __cruncher_menu = None
+    __joystick_input = JoystickInput()
     __looper = True
 
     def __init__(sef):
@@ -29,11 +30,18 @@ class J2Cruncher:
         try:
             while __looper:
                 self.__cruncher_menu.paint_screen()
+                self.process_menu()
                 # if(self.__cruncher_menu.selected_command != None):
                 #     self.__selected_command.start()
                 time.sleep(1.0 / 60)
         except KeyboardInterrupt:
             self.cleanup()
+
+    def process_menu(self):
+        if(self.__curcher_menu.previous_menu_name != self.__cruncher_menu.current_menu_name):
+            if(self.__cruncher_menu.current_menu_name == "ev_pi_noon"):
+                self.__joystick_input.enabled = True
+                __bt_server.send()
 
     def data_received(self, data):
         print(data)

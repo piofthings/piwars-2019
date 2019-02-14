@@ -4,7 +4,7 @@ from gpiozero import PhaseEnableMotor
 from time import sleep
 
 
-class DcDrive():
+class GpiozeroDrive():
     DIRECTION_FORWARD = 1
     DIRECTION_BACKWARD = 0
 

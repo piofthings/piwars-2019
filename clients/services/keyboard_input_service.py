@@ -1,4 +1,4 @@
-from dc_drive import DcDrive
+from dc_drive import GpiozeroDrive
 from keyboard_input import KeyboardInput
 
 
