@@ -1,5 +1,5 @@
 from base_command import BaseCommand
-from joystick_input import JoystickController
+from joystick_input import JoystickInput
 
 
 class PiNoonCommand(BaseCommand):

@@ -28,44 +28,58 @@ class JoystickInput():
     # Time between updates in seconds, smaller responds faster but uses more processor time
     __interval = 1 / 100
 
-    # driveLeft = 0
-    # driveRight = 0
+    __driveLeft = 0
+    __driveRight = 0
+    __directionLeft = 0
+    __directionRight = 0
+    __enabled = False
+
+    __joystick = None
 
     @property
     def driveRight(self):
         """I'm the 'driveLeft' property."""
-        return self.driveRight
+        return self.__driveRight
 
     @driveRight.setter
     def driveRight(self, value):
-        self.driveRight = value
+        self.__driveRight = value
 
     @property
     def driveLeft(self):
         """I'm the 'driveLeft' property."""
-        return self.driveLeft
+        return self.__driveLeft
 
     @driveLeft.setter
     def driveLeft(self, value):
-        self.driveLeft = value
+        self.__driveLeft = value
 
     @property
     def directionLeft(self):
         """I'm the 'driveLeft' property."""
-        return self._direction
+        return self.__directionLeft
 
     @directionLeft.setter
     def directionLeft(self, value):
-        self._direction = value
+        self.__directionLeft = value
+
+    @property
+    def directionRight(self):
+        """I'm the 'driveLeft' property."""
+        return self.__directionRight
+
+    @directionRight.setter
+    def directionRight(self, value):
+        self.__directionRight = value
 
     @property
     def enabled(self):
         """I'm the 'x' property."""
-        return self._enabled
+        return self.__enabled
 
     @enabled.setter
     def enabled(self, value):
-        self._enabled = value
+        self.__enabled = value
 
     def __init__(self):
         # Re-direct our output to standard error, we need to ignore standard out to hide some nasty print statements from pygame
@@ -90,7 +104,7 @@ class JoystickInput():
                         time.sleep(0.1)
                     else:
                         # We have a joystick, attempt to initialise it!
-                        joystick = pygame.joystick.Joystick(0)
+                        self.__joystick = pygame.joystick.Joystick(0)
                         break
                 except pygame.error:
                     # Failed to connect to the joystick
@@ -101,7 +115,7 @@ class JoystickInput():
                 print('\nUser aborted')
                 sys.exit()
         print('Joystick found')
-        joystick.init()
+        self.__joystick.init()
         ledBatteryMode = True
         print('Press CTRL+C to quit')
         self.driveLeft = 0.0
@@ -112,9 +126,9 @@ class JoystickInput():
         leftRight = 0.0
 
         if (start_polling):
-            self.poll()
+            self.poll_joystick_events()
 
-    def poll_joystick_events():
+    def poll_joystick_events(self):
         # Get the latest events from the system
         hadEvent = False
         events = pygame.event.get()
@@ -133,22 +147,22 @@ class JoystickInput():
                 # A joystick has been moved
                 hadEvent = True
             if hadEvent:
-                if(joystick.get_button(self.__leftTrigger)):
-                    print(joystick.get_button(self.__leftTrigger))
+                if(self.__joystick.get_button(self.__leftTrigger)):
+                    print(self.__joystick.get_button(self.__leftTrigger))
                     self.__ub.SetServoPosition3(-0.6)
-                if(joystick.get_button(self.__kickButton)):
+                if(self.__joystick.get_button(self.__kickButton)):
                     self.__ub.SetServoPosition3(0.7)
                 # Read axis positions (-1 to +1)
                 if self.__axisUpDownInverted:
-                    upDown = -joystick.get_axis(self.__axisUpDown)
+                    upDown = -self.__joystick.get_axis(self.__axisUpDown)
                 else:
-                    upDown = joystick.get_axis(self.__axisUpDown)
+                    upDown = self.__joystick.get_axis(self.__axisUpDown)
                 if self.__axisLeftRightInverted:
-                    leftRight = -joystick.get_axis(self.__axisLeftRight)
+                    leftRight = -self.__joystick.get_axis(self.__axisLeftRight)
                 else:
-                    leftRight = joystick.get_axis(self.__axisLeftRight)
+                    leftRight = self.__joystick.get_axis(self.__axisLeftRight)
                 # Apply steering speeds
-                if not joystick.get_button(self.__buttonFastTurn):
+                if not self.__joystick.get_button(self.__buttonFastTurn):
                     leftRight *= 0.5
 
                 # Determine the drive power levels
@@ -161,12 +175,24 @@ class JoystickInput():
                     # Turning right
                     self.driveRight *= 1.0 - (2.0 * leftRight)
                 # Check for button presses
-                if joystick.get_button(self.__axisLeftRightInverted):
+                if self.__joystick.get_button(self.__axisLeftRightInverted):
                     self.driveLeft *= self.__slowFactor
                     self.driveRight *= self.__slowFactor
-                # Set the motors to the new speeds
-                # self.__tb.SetMotor1(self.driveRight * self.maxPower)
-                # self.__tb.SetMotor2(self.driveLeft * self.maxPower)
+            print("{},{},{},{}".format(self.driveLeft, self.directionLeft, self.driveRight, self.directionRight))
+            if(self.driveRight < 0):
+                self.directionRight = 0
+                self.driveRight *= -1
+            else:
+                self.directionRight = 1
+
+            if(self.driveLeft < 0):
+                self.directionLeft = 0
+                self.driveLeft *= -1
+            else:
+                self.directionLeft = 1
+            # Set the motors to the new speeds
+            # self.__tb.SetMotor1(self.driveRight * self.maxPower)
+            # self.__tb.SetMotor2(self.driveLeft * self.maxPower)
             # Wait for the __interval period
             # time.sleep(self.__interval)
         # Disable all drives

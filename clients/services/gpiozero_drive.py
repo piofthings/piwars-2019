@@ -38,8 +38,8 @@ class GpiozeroDrive():
 
     def move(self, directionLeft, directionRight, speedLeft, speedRight):
         self.setDirection(directionLeft, directionRight)
-        if (speedLeft >= 0 & & speedRight >= 0 & &
-                speedLeft <= 1 & & speedRight <= 1):
+        if (speedLeft >= 0 and speedRight >= 0 and
+                speedLeft <= 1 and speedRight <= 1):
             if(directionLeft == self.DIRECTION_FORWARD):
                 self.__leftMotors.forward(speedLeft)
             elif(directionLeft == self.DIRECTION_BACKWARD):
@@ -47,7 +47,7 @@ class GpiozeroDrive():
 
             if(directionRight == self.DIRECTION_FORWARD):
                 self.__rightMotors.forward(speedRight)
-            elif(directionRight == self.DIRECTION_BACKWARD)
+            elif(directionRight == self.DIRECTION_BACKWARD):
                 self.__rightMotors.backward(speedRight)
 
     def stop(self):

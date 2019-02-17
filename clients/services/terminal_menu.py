@@ -1,3 +1,5 @@
+import sys
+import os
 from keyboard_input import KeyboardInput
 
 

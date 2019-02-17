@@ -18,11 +18,10 @@ class SerialisableBase:
             self.deserialise(s)
 
     def deserialise(self, json_dict):
-        print("Field", "| Value")
+        #print("Field", "| Value")
         for field, value in json_dict.items():
-            print(field, value)
-            self.__dict__[
-                field] = None if field not in json_dict else json_dict[field]
+            #print(field, value)
+            self.__dict__[field] = None if field not in json_dict else json_dict[field]
 
     def serialise(self, selfie):
         return_dict = dict()

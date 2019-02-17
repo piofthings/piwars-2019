@@ -28,6 +28,7 @@ class CruncherMenu:
 
     __looper = False
 
+    __paint_required = False
     current_menu_name = ""
     previous_menu_name = ""
 
@@ -36,6 +37,7 @@ class CruncherMenu:
         Press Ctrl+C or select "Exit" to exit.
         """)
 
+        self.__paint_required = True
         self.init_menus()
 
         width, height = lcd.dimensions()
@@ -51,6 +53,9 @@ class CruncherMenu:
 
         self.__draw = ImageDraw.Draw(self.__image)
         atexit.register(self.cleanup)
+        self.set_backlight(255, 255, 255)
+        self.set_menu_options()
+        self.init_screen()
 
     def init_menus(self):
         self.__home_options = [
@@ -105,6 +110,10 @@ class CruncherMenu:
             self.__menu_options = self.__home_options
         else:
             self.__menu_options = menuOptions
+        self.__current_menu_option = 0
+
+    def show_events_menu(self):
+        self.set_menu_options(self.__events_menu_options)
 
     def show_wheels_calibration_menu(self):
         self.set_menu_options(self.__calibration_options)
@@ -122,7 +131,10 @@ class CruncherMenu:
 
     def handler(self, ch, event):
         # global
-        self.previous_menu_name = self.__menu_options[self.__current_menu_option].name
+        if len(self.__menu_options) < self.__current_menu_option:
+            self.previous_menu_name = self.__menu_options[self.__current_menu_option].name
+        else:
+            self.previous_menu_name = ""
 
         if event != 'press':
             return
@@ -135,6 +147,7 @@ class CruncherMenu:
 
         self.__current_menu_option %= len(self.__menu_options)
         self.current_menu_name = self.__menu_options[self.__current_menu_option].name
+        self.__paint_required = True
 
     def invoke_pi_noon_command(self):
         pass
@@ -145,30 +158,41 @@ class CruncherMenu:
         lcd.clear()
         lcd.show()
 
-    def init_screen():
+    def init_screen(self):
         for x in range(6):
             touch.set_led(x, 0)
             backlight.set_pixel(x, 255, 255, 255)
             touch.on(x, self.handler)
 
-    def run(self):
-        self.init_screen()
-
-        backlight.show()
-        self.set_menu_options()
-        self.__looper = True
-        while self.__looper:
-            self.paint_screen()
-            time.sleep(1.0 / 30)
+    # def run(self):
+    #     self.init_screen()
+    #
+    #     backlight.show()
+    #     self.set_menu_options()
+    #     self.__looper = True
+    #     while self.__looper:
+    #         self.paint_screen()
+    #         time.sleep(1.0 / 30)
 
     def paint_screen(self):
         try:
             self.__image.paste(0, (0, 0, self.__lcdWidth, self.__lcdHeight))
-            offset_top = 0
 
             if self.__trigger_action:
                 self.__menu_options[self.__current_menu_option].trigger()
                 self.__trigger_action = False
+
+            self.paint_buffered()
+            lcd.show()
+
+        except KeyboardInterrupt:
+            self.__looper = False
+            self.cleanup()
+
+    def paint_buffered(self):
+        if(self.__paint_required == True):
+            self.__paint_required = False
+            offset_top = 0
 
             for index in range(len(self.__menu_options)):
                 if index == self.__current_menu_option:
@@ -191,12 +215,5 @@ class CruncherMenu:
                     pixel = self.__image.getpixel((x, y))
                     lcd.set_pixel(x, y, pixel)
 
-            lcd.show()
-
-        except KeyboardInterrupt:
-            self.__looper = False
-            self.cleanup()
-
-
-menu = CruncherMenu()
-menu.run()
+# menu = CruncherMenu()
+# menu.run()
