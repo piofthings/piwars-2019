@@ -178,7 +178,7 @@ class JoystickInput():
                 if self.__joystick.get_button(self.__axisLeftRightInverted):
                     self.driveLeft *= self.__slowFactor
                     self.driveRight *= self.__slowFactor
-            print("{},{},{},{}".format(self.driveLeft, self.directionLeft, self.driveRight, self.directionRight))
+            #print("{},{},{},{}".format(self.driveLeft, self.directionLeft, self.driveRight, self.directionRight))
             if(self.driveRight < 0):
                 self.directionRight = 0
                 self.driveRight *= -1

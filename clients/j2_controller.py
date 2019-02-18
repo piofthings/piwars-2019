@@ -24,6 +24,7 @@ from servo_calibration import ServoCalibration
 
 from bt_request import BtRequest
 from piconzero_drive import PiconzeroDrive
+from gpiozero_drive import GpiozeroDrive
 
 from terminal_menu import TerminalMenu
 
@@ -35,6 +36,7 @@ class J2controller():
     __bt_client = None
     __terminalMenu = TerminalMenu()
     __piconzero_drive = PiconzeroDrive()
+    __gpiozero_drive = GpiozeroDrive()
 
     def __init__(self, arg):
         self.arg = arg
@@ -45,7 +47,7 @@ class J2controller():
         except:
             print("Servokit not initialised, Servo Calibration won't work")
         try:
-            self.__bt_client = BluetoothClient("tinycruncher", self.data_received)
+            self.__bt_client = BluetoothClient("j2cruncher", self.data_received)
             print("Bluetooth client initialised, ready for Cruncher comms:")
 
         except:
@@ -72,7 +74,7 @@ class J2controller():
         try:
             request = BtRequest(json_def=data_string)
             if(request.cmd == "steering" and request.action == "move"):
-                self.__piconzero_drive.move(int(request.data.directionLeft), int(request.data.directionRight), float(request.data.speedLeft), float(request.data.speedRight))
+                self.__gpiozero_drive.move(int(request.data.directionLeft), int(request.data.directionRight), float(request.data.speedLeft), float(request.data.speedRight))
         except:
             type, value, traceback = sys.exc_info()
             print('Error Deserialising %s: %s %s' % (data_string, type, value))
