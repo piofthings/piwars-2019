@@ -29,6 +29,7 @@ class CruncherMenu:
     __looper = False
 
     __paint_required = False
+    __backlight_timeout = 15000  # 15 seconds
     current_menu_name = ""
     previous_menu_name = ""
 
@@ -88,8 +89,7 @@ class CruncherMenu:
             CruncherMenuOption("wc_frw",    "Front Right Wheel", None),
             CruncherMenuOption("wc_rlw",    "Rear left Wheel", None),
             CruncherMenuOption("wc_rrw",    "Rear right Wheel", None),
-            CruncherMenuOption("wc_fs",     "Front Suspension", None),
-            CruncherMenuOption("wc_rs",     "Rear Suspension", None),
+            CruncherMenuOption("wc_sus",     "Suspension", self.show_suspension_screen),
             CruncherMenuOption("wc_back",   "Back", self.show_wheels_calibration_menu),
         ]
 
