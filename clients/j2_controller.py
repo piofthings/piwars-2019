@@ -56,18 +56,20 @@ class J2controller():
         # self.main()
 
     def init(self):
-        #
         while self.__looper:
-            #keyp = self.__terminalMenu.keyPress
+            try:
+            # keyp = self.__terminalMenu.keyPress
             # if (keyp == 'q'):
             #    self.__looper = False
             # elif (keyp == 'c' or keyp == 'C'):
             #    sc = ServoCalibration(self.__kit)
             #    sc.menu()
-                # self.__menu()
-            # elif (keyp == 'd' or keyp == 'd'):
+            #    self.__menu()
+            #elif (keyp == 'd' or keyp == 'd'):
 
-            time.sleep(1 / 60)
+                time.sleep(1 / 60)
+            except KeyboardInterrupt:
+                self.__looper = False
 
     def data_received(self, data_string):
         #print("BT Recieved:" + data_string)
