@@ -54,16 +54,17 @@ class J2Cruncher:
             #print("Previous {}, Current {}".format(self.__cruncher_menu.previous_menu_name, self.__cruncher_menu.current_menu_name))
 
     def update_j2_controller(self):
-        if(self.__joystick_input.enabled == True):
-            btCommand = '{{"cmd": "steering","action": "move","data": {{ "speedLeft": {},"directionLeft": {}, "speedRight": {}, "directionRight": {} }} }}'.format(
-                self.__joystick_input.driveLeft,
-                self.__joystick_input.directionLeft,
-                self.__joystick_input.driveRight,
-                self.__joystick_input.directionRight
-            )
-            # if(self.__joystick_input.driveRight != 0 and self.__joystick_input.driveRight != 0):
-            # print(btCommand)
-            self.__bt_server.send(btCommand)
+        if(self.__cruncher_menu.current_menu_name == "ev_pi_noon"):
+            if(self.__joystick_input.enabled == True):
+                btCommand = '{{"cmd": "steering","action": "move","data": {{ "speedLeft": {},"directionLeft": {}, "speedRight": {}, "directionRight": {} }} }}'.format(
+                    self.__joystick_input.driveLeft,
+                    self.__joystick_input.directionLeft,
+                    self.__joystick_input.driveRight,
+                    self.__joystick_input.directionRight
+                )
+                # if(self.__joystick_input.driveRight != 0 and self.__joystick_input.driveRight != 0):
+                # print(btCommand)
+                self.__bt_server.send(btCommand)
 
     def data_received(self, data):
         print(data)
