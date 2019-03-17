@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 import time
-import sys, os
+import sys
+import os
 
 from adafruit_servokit import ServoKit
 sys.path.append(os.path.abspath(os.path.join(
@@ -19,11 +20,11 @@ REST = 60
 FIRE_EVEN = 120
 FIRE_ODD = 0
 
-TRIGGER_WAIT = 1/5
+TRIGGER_WAIT = 1 / 5
 kit.servo[TRIGGER_1].angle = REST
 kit.servo[TRIGGER_2_3].angle = REST
 kit.servo[TRIGGER_4_5].angle = REST
-keyboardInput = KeyboardInput("J2Controller")
+keyboardInput = KeyboardInput("Trigger Prototype")
 keyPress = ''
 
 while keyPress != 'q':
@@ -69,6 +70,6 @@ while keyPress != 'q':
         kit.servo[TRIGGER_4_5].angle = kit.servo[TRIGGER_4_5].angle - 5
     elif keyPress == 'j':
         kit.servo[TRIGGER_4_5].angle = 0
-#time.sleep(2)
+# time.sleep(2)
 #kit.servo[TRIGGER_0].angle = max
 #kit.servo[5].angle = max

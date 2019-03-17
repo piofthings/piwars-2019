@@ -3,6 +3,7 @@ import os
 import sys
 import time
 import atexit
+import asyncio
 
 sys.path.append(os.path.abspath(os.path.join(
     os.path.dirname(__file__), "services")))
@@ -31,7 +32,7 @@ class J2Cruncher:
         self.__joystick_input.init_joystick()
         atexit.register(self.cleanup)
 
-    def run(self):
+    async def run(self):
         self.__cruncher_menu.init_screen()
         while self.__looper:
             try:
@@ -41,7 +42,7 @@ class J2Cruncher:
                 #     self.__selected_command.start()
                 self.__joystick_input.poll_joystick_events()
                 self.update_j2_controller()
-                time.sleep(1.0 / 60)
+                await asyncio.sleep(1.0 / 60)
             except KeyboardInterrupt:
                 self.__looper = False
                 self.cleanup()
@@ -78,4 +79,11 @@ class J2Cruncher:
 
 if __name__ == '__main__':
     cruncher = J2Cruncher()
-    cruncher.run()
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        loop.run_until_complete(cruncher.run())
+    finally:
+        loop.run_until_complete(loop.shutdown_asyncgens())
+        loop.close()

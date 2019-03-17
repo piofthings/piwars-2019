@@ -37,10 +37,18 @@ class J2controller():
     __terminalMenu = TerminalMenu()
     __piconzero_drive = PiconzeroDrive()
     __gpiozero_drive = GpiozeroDrive()
+    __steering = None
 
     def __init__(self, arg):
         self.arg = arg
         atexit.register(self.cleanup)
+
+        # try:
+        #     self.__steering = Steering(self.__kit, steeringStatusFile=os.path.abspath("./config/steering_status.json"))
+        # except:
+        #     type, value, traceback = sys.exc_info()
+        #     print("Steering status failed to load")
+        #     print('Error Details %s: %s %s' % (data_string, type, value))
 
         try:
             self.__kit = ServoKit(channels=16)
@@ -51,32 +59,46 @@ class J2controller():
             print("Bluetooth client initialised, ready for Cruncher comms:")
 
         except:
+            type, value, traceback = sys.exc_info()
             print("Bluetooth client not initialised, Cruncher comms won't work")
+            print('Error Details %s: %s %s' % (data_string, type, value))
 
         # self.main()
 
     def init(self):
+        #
         while self.__looper:
-            try:
             # keyp = self.__terminalMenu.keyPress
             # if (keyp == 'q'):
             #    self.__looper = False
             # elif (keyp == 'c' or keyp == 'C'):
             #    sc = ServoCalibration(self.__kit)
             #    sc.menu()
-            #    self.__menu()
-            #elif (keyp == 'd' or keyp == 'd'):
+                # self.__menu()
+            # elif (keyp == 'd' or keyp == 'd'):
 
-                time.sleep(1 / 60)
-            except KeyboardInterrupt:
-                self.__looper = False
+            time.sleep(1 / 60)
 
     def data_received(self, data_string):
-        #print("BT Recieved:" + data_string)
+        # print("BT Recieved:" + data_string)
         try:
             request = BtRequest(json_def=data_string)
-            if(request.cmd == "steering" and request.action == "move"):
-                self.__gpiozero_drive.move(int(request.data.directionLeft), int(request.data.directionRight), float(request.data.speedLeft), float(request.data.speedRight))
+            if(request.cmd == "calibrate"):
+                if(request.action == "getStatus"):
+                    self.bt_request.send(json.dumps(self.__steering.steering()))
+                elif(request.action == "setStatus"):
+                    self.bt_request.s
+            elif(request.cmd == "steering"):
+                if(request.action == "move"):
+                    self.__gpiozero_drive.move(int(request.data.directionLeft), int(request.data.directionRight), float(request.data.speedLeft), float(request.data.speedRight))
+            elif(request.cmd == "shooter"):
+                if(request.action == "aim"):
+                    # Turn laser on
+                    pass
+                elif(request.action == "launch"):
+                    # Fire appropriate cannon
+                    pass
+
         except:
             type, value, traceback = sys.exc_info()
             print('Error Deserialising %s: %s %s' % (data_string, type, value))

@@ -3,6 +3,7 @@ import os
 import sys
 import time
 import atexit
+import asyncio
 
 sys.path.append(os.path.abspath(os.path.join(
     os.path.dirname(__file__), "services")))
@@ -13,9 +14,11 @@ from gfxhat import touch, lcd, backlight, fonts
 from PIL import Image, ImageFont, ImageDraw
 from cruncher_menu_option import CruncherMenuOption
 from pi_noon_command import PiNoonCommand
+from timer import Timer
 
 
 class CruncherMenu:
+
     __current_menu_option = None
     #__trigger_action = None
     __lcdWidth = 0
@@ -30,6 +33,9 @@ class CruncherMenu:
 
     __paint_required = False
     __backlight_timeout = 15000  # 15 seconds
+
+    __backlight_timed_out = False
+
     current_menu_name = ""
     previous_menu_name = ""
 
@@ -39,6 +45,7 @@ class CruncherMenu:
         """)
 
         self.__paint_required = True
+        self.__timer = Timer(5, self.__switch_backlight_off)
         self.init_menus()
 
         width, height = lcd.dimensions()
@@ -58,6 +65,17 @@ class CruncherMenu:
         self.set_menu_options()
         self.init_screen()
 
+    async def __switch_backlight_off(self):
+        print("Switching backlight off")
+
+        backlight.set_all(0, 0, 0)
+        backlight.show()
+        self.__backlight_timed_out = True
+
+    def __switch_backlight_on(self):
+        backlight.set_all(self.__backlight_r, self.__backlight_g, self.__backlight_b)
+        backlight.show()
+
     def init_menus(self):
         self.__home_options = [
             CruncherMenuOption('home_title', 'J2 Controller', None),
@@ -75,7 +93,7 @@ class CruncherMenu:
             CruncherMenuOption("sc_back",                   "Back", self.set_menu_options)
         ]
         self.__servo_index_options = [
-            CruncherMenuOption("wi_fl_wheel_index", "FL Wheel Index", None),
+            CruncherMenuOption("wi_fl_wheel_index", "FL Wheel Index", self.show_wheels_calibration_screen),
             CruncherMenuOption("wi_fr_wheel_index", "FR Wheel Index", None),
             CruncherMenuOption("wi_rl_wheel_index", "RL Wheel Index", None),
             CruncherMenuOption("wi_rr_wheel_index", "RR Wheel Index", None),
@@ -85,11 +103,11 @@ class CruncherMenu:
 
         ]
         self.__servo_zero_position_options = [
-            CruncherMenuOption("wc_flw",    "Front left Wheel", None),
-            CruncherMenuOption("wc_frw",    "Front Right Wheel", None),
-            CruncherMenuOption("wc_rlw",    "Rear left Wheel", None),
-            CruncherMenuOption("wc_rrw",    "Rear right Wheel", None),
-            CruncherMenuOption("wc_sus",     "Suspension", self.show_suspension_screen),
+            CruncherMenuOption("wc_flw",    "Front left Wheel", self.set_front_left_wheel),
+            CruncherMenuOption("wc_frw",    "Front Right Wheel", self.set_front_right_wheel),
+            CruncherMenuOption("wc_rlw",    "Rear left Wheel", self.set_rear_left_wheel),
+            CruncherMenuOption("wc_rrw",    "Rear right Wheel", self.set_rear_right_wheel),
+            CruncherMenuOption("wc_sus",    "Suspension", self.show_suspension_screen),
             CruncherMenuOption("wc_back",   "Back", self.show_wheels_calibration_menu),
         ]
 
@@ -119,6 +137,27 @@ class CruncherMenu:
         self.set_menu_options(self.__calibration_options)
         # self.paint_screen()
 
+    def show_wheels_calibration_screen(self):
+        return
+
+    def set_front_left_wheel(self):
+        return
+
+    def set_front_right_wheel(self):
+        return
+
+    def set_rear_left_wheel(self):
+        return
+
+    def set_rear_right_wheel(self):
+        return
+
+    def show_suspension_screen(self):
+        return
+
+    def show_wheels_calibration_menu(self):
+        return
+
     def show_servo_index_menu(self):
         self.set_menu_options(self.__servo_index_options)
 
@@ -126,11 +165,24 @@ class CruncherMenu:
         self.set_menu_options(self.__servo_zero_position_options)
 
     def set_backlight(self, r, g, b):
+        self.__backlight_r = r
+        self.__backlight_g = g
+        self.__backlight_b = b
         backlight.set_all(r, g, b)
         backlight.show()
 
     def handler(self, ch, event):
         # global
+        if(self.__backlight_timed_out):
+            self.__backlight_timed_out = False
+            self.__switch_backlight_on()
+            return
+
+        if self.__timer.is_running:
+            print("Timer is running")
+            self.__timer.cancel()
+            print("Timer Cancelled")
+
         if len(self.__menu_options) < self.__current_menu_option:
             self.previous_menu_name = self.__menu_options[self.__current_menu_option].name
         else:
@@ -150,7 +202,7 @@ class CruncherMenu:
         self.__paint_required = True
 
     def invoke_pi_noon_command(self):
-        pass
+        return
 
     def cleanup(self):
         backlight.set_all(0, 0, 0)
@@ -182,14 +234,27 @@ class CruncherMenu:
                 self.__menu_options[self.__current_menu_option].trigger()
                 self.__trigger_action = False
 
-            self.paint_buffered()
+            if(len(self.__menu_options) > 0):
+                self.paint_menu_buffered()
+            else:
+                self.paint_settings_screen()
+
+            if(self.__timer.is_running == False):
+                print("Timer is not running")
+                self.__timer.start()
+                print("Timer started")
+
             lcd.show()
 
         except KeyboardInterrupt:
             self.__looper = False
             self.cleanup()
 
-    def paint_buffered(self):
+    def paint_settings_screen(self):
+        if current_menu_name == "":
+            return
+
+    def paint_menu_buffered(self):
         if(self.__paint_required == True):
             self.__paint_required = False
             offset_top = 0

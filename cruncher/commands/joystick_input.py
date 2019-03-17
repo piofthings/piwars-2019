@@ -5,6 +5,8 @@ import time
 import os
 import sys
 import pygame
+from rock_candy import RockCandy
+from steering_positions import SteeringPositions
 
 
 class JoystickInput():
@@ -20,7 +22,7 @@ class JoystickInput():
     # Speed to slow to when the drive slowly button is held, e.g. 0.5 would be half speed
     __slowFactor = 0.5
     # Joystick button number for driving slowly whilst held (L2)
-    __axisLeftRightInverted = 6
+    __buttonSlow = 6
     # Joystick button number for turning fast (R2)
     __buttonFastTurn = 7
     __leftTrigger = 0
@@ -147,9 +149,20 @@ class JoystickInput():
                 # A joystick has been moved
                 hadEvent = True
             if hadEvent:
-                if(self.__joystick.get_button(self.__leftTrigger)):
-                    print(self.__joystick.get_button(self.__leftTrigger))
-                    self.__ub.SetServoPosition3(-0.6)
+                if (self.__joystick.get_button(RockCandy.BUTTON_HOME)):
+                    self.steering_position = SteeringPositions.NEUTRAL
+                elif(self.__joystick.get_button(RockCandy.BUTTON_R_DP_TOP)):
+                    self.steering_position = SteeringPositions.NEUTRAL
+                elif(self.__joystick.get_button(RockCandy.BUTTON_R_DP_BOTTOM)):
+                    self.steering_position = SteeringPositions.SPOT_TURN
+                elif(self.__joystick.get_button(RockCandy.BUTTON_R_DP_LEFT)):
+                    self.steering_position = SteeringPositions.STRAFE_LEFT
+                elif(self.__joystick.get_button(RockCandy.BUTTON_R_DP_RIGHT)):
+                    self.steering_position = SteeringPositions.STRAFE_RIGHT
+
+                if(self.__joystick.get_button(RockCandy.LEFT_TRIGGER)):
+                    print(self.__joystick.get_button(RockCandy.LEFT_TRIGGER))
+
                 if(self.__joystick.get_button(self.__kickButton)):
                     self.__ub.SetServoPosition3(0.7)
                 # Read axis positions (-1 to +1)
@@ -175,7 +188,7 @@ class JoystickInput():
                     # Turning right
                     self.driveRight *= 1.0 - (2.0 * leftRight)
                 # Check for button presses
-                if self.__joystick.get_button(self.__axisLeftRightInverted):
+                if self.__joystick.get_button(self.__buttonSlow):
                     self.driveLeft *= self.__slowFactor
                     self.driveRight *= self.__slowFactor
             #print("{},{},{},{}".format(self.driveLeft, self.directionLeft, self.driveRight, self.directionRight))
