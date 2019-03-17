@@ -32,7 +32,7 @@ class CruncherMenu:
     __looper = False
 
     __paint_required = False
-    __backlight_timeout = 15000  # 15 seconds
+    __backlight_timeout = 5  # 5 seconds
 
     __backlight_timed_out = False
 
@@ -45,7 +45,7 @@ class CruncherMenu:
         """)
 
         self.__paint_required = True
-        self.__timer = Timer(5, self.__switch_backlight_off)
+        self.__timer = Timer(self.__backlight_timeout, self.__switch_backlight_off)
         self.init_menus()
 
         width, height = lcd.dimensions()
@@ -202,6 +202,7 @@ class CruncherMenu:
         self.__paint_required = True
 
     def invoke_pi_noon_command(self):
+
         return
 
     def cleanup(self):

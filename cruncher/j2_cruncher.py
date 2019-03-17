@@ -9,6 +9,9 @@ sys.path.append(os.path.abspath(os.path.join(
     os.path.dirname(__file__), "services")))
 
 sys.path.append(os.path.abspath(os.path.join(
+    os.path.dirname(__file__), "services/menu")))
+
+sys.path.append(os.path.abspath(os.path.join(
     os.path.dirname(__file__), "commands")))
 
 from bluedot.btcomm import BluetoothServer
