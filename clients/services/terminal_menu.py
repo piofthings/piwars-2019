@@ -27,3 +27,4 @@ class TerminalMenu():
         print("q: Quit")
         print("")
         keyPress = self.__keyboardInput.readkey()
+        return keyPress

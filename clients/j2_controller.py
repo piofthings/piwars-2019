@@ -35,7 +35,7 @@ class J2controller():
     __kit = None
     __bt_client = None
     __terminalMenu = TerminalMenu()
-    __piconzero_drive = PiconzeroDrive()
+    __piconzero_drive = None  # PiconzeroDrive()
     __gpiozero_drive = GpiozeroDrive()
     __steering = None
 
@@ -43,17 +43,18 @@ class J2controller():
         self.arg = arg
         atexit.register(self.cleanup)
 
-        # try:
-        #     self.__steering = Steering(self.__kit, steeringStatusFile=os.path.abspath("./config/steering_status.json"))
-        # except:
-        #     type, value, traceback = sys.exc_info()
-        #     print("Steering status failed to load")
-        #     print('Error Details %s: %s %s' % (data_string, type, value))
-
         try:
             self.__kit = ServoKit(channels=16)
         except:
             print("Servokit not initialised, Servo Calibration won't work")
+
+        try:
+            self.__steering = Steering(self.__kit, steeringStatusFile=os.path.abspath("./config/steering_status.json"))
+        except:
+            type, value, traceback = sys.exc_info()
+            print("Steering status failed to load")
+            print('Error Details %s: %s %s' % (data_string, type, value))
+
         try:
             self.__bt_client = BluetoothClient("j2cruncher", self.data_received)
             print("Bluetooth client initialised, ready for Cruncher comms:")
@@ -63,10 +64,7 @@ class J2controller():
             print("Bluetooth client not initialised, Cruncher comms won't work")
             print('Error Details %s: %s %s' % (data_string, type, value))
 
-        # self.main()
-
     def init(self):
-        #
         while self.__looper:
             # keyp = self.__terminalMenu.keyPress
             # if (keyp == 'q'):
