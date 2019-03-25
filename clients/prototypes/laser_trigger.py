@@ -4,18 +4,17 @@ import time
 import sys
 import os
 
-from adafruit_servokit import ServoKit
 sys.path.append(os.path.abspath(os.path.join(
     os.path.dirname(__file__), "../services")))
 
 from keyboard_input import KeyboardInput
 from gpiozero import DigitalOutputDevice
 
-RELAY_1 = 17
-RELAY_2 = 27
-RELAY_3 = 22
-RELAY_4 = 23
-RELAY_5 = 24
+RELAY_1 = 17  # Green
+RELAY_2 = 27  # Yellow
+RELAY_3 = 22  # Orange
+RELAY_4 = 23  # Red
+RELAY_5 = 24  # Brown
 
 relay1 = DigitalOutputDevice(pin=RELAY_1)
 relay2 = DigitalOutputDevice(pin=RELAY_2)
