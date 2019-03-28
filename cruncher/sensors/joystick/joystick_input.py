@@ -6,6 +6,7 @@ import os
 import sys
 import pygame
 from rock_candy import RockCandy
+from pi_hut import PiHutController
 from steering_positions import SteeringPositions
 
 
@@ -20,7 +21,7 @@ class JoystickInput():
     __axisLeftRightInverted = True
 
     # Speed to slow to when the drive slowly button is held, e.g. 0.5 would be half speed
-    __slowFactor = 0.5
+    __slowFactor = 0.8
     # Joystick button number for driving slowly whilst held (L2)
     __buttonSlow = 6
     # Joystick button number for turning fast (R2)
@@ -39,6 +40,19 @@ class JoystickInput():
     __joystick = None
 
     __debug = False
+
+    __steering_postition = SteeringPositions.NEUTRAL
+
+    controllerButtons = PiHutController()
+
+    @property
+    def steeringPosition(self):
+        """I'm the 'Steering Position' property."""
+        return self.__steering_postition
+
+    @steeringPosition.setter
+    def steeringPosition(self, value):
+        self.__steering_postition = value
 
     @property
     def driveRight(self):
@@ -166,22 +180,20 @@ class JoystickInput():
                 # A joystick has been moved
                 hadEvent = True
             if hadEvent:
-                if (self.__joystick.get_button(RockCandy.BUTTON_HOME)):
-                    self.steering_position = SteeringPositions.NEUTRAL
-                elif(self.__joystick.get_button(RockCandy.BUTTON_R_DP_TOP)):
-                    self.steering_position = SteeringPositions.NEUTRAL
-                elif(self.__joystick.get_button(RockCandy.BUTTON_R_DP_BOTTOM)):
-                    self.steering_position = SteeringPositions.SPOT_TURN
-                elif(self.__joystick.get_button(RockCandy.BUTTON_R_DP_LEFT)):
-                    self.steering_position = SteeringPositions.STRAFE_LEFT
-                elif(self.__joystick.get_button(RockCandy.BUTTON_R_DP_RIGHT)):
-                    self.steering_position = SteeringPositions.STRAFE_RIGHT
+                if (self.__joystick.get_button(self.controllerButtons.BUTTON_HOME)):
+                    self.steeringPosition = SteeringPositions.NEUTRAL
+                elif(self.__joystick.get_button(self.controllerButtons.BUTTON_R_DP_TOP)):
+                    self.steeringPosition = SteeringPositions.NEUTRAL
+                elif(self.__joystick.get_button(self.controllerButtons.BUTTON_R_DP_BOTTOM)):
+                    self.steeringPosition = SteeringPositions.SPOT_TURN
+                elif(self.__joystick.get_button(self.controllerButtons.BUTTON_R_DP_LEFT)):
+                    self.steeringPosition = SteeringPositions.STRAFE_LEFT
+                elif(self.__joystick.get_button(self.controllerButtons.BUTTON_R_DP_RIGHT)):
+                    self.steeringPosition = SteeringPositions.STRAFE_RIGHT
 
-                if(self.__joystick.get_button(RockCandy.LEFT_TRIGGER)):
-                    print(self.__joystick.get_button(RockCandy.LEFT_TRIGGER))
+                if(self.__joystick.get_button(self.controllerButtons.LEFT_TRIGGER)):
+                    print(self.__joystick.get_button(self.controllerButtons.LEFT_TRIGGER))
 
-                if(self.__joystick.get_button(self.__kickButton)):
-                    self.__ub.SetServoPosition3(0.7)
                 # Read axis positions (-1 to +1)
                 if self.__axisUpDownInverted:
                     upDown = -self.__joystick.get_axis(self.__axisUpDown)

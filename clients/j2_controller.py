@@ -94,16 +94,26 @@ class J2controller():
     def data_received(self, data_string):
         print("BT Recieved:" + data_string)
         try:
-            request = BtRequest(json_def=data_string)
+            lines = data_string.splitlines()
+            request = BtRequest(json_def=lines[0])
             if(request.cmd == "calibrate"):
                 if(request.action == "getStatus"):
                     self.bt_request.send(json.dumps(self.__steering.steering()))
                 elif(request.action == "setStatus"):
-                    self.bt_request.s
-            elif(request.cmd == "steering"):
+                    # self.bt_request.s
+                    pass
+            if(request.cmd == "steering"):
                 if(request.action == "move"):
                     self.__gpiozero_drive.move(int(request.data.directionLeft), int(request.data.directionRight), float(request.data.speedLeft), float(request.data.speedRight))
-            elif(request.cmd == "shooter"):
+            if(request.cmd == "wheels"):
+                if(request.action == "strafe"):
+                    if(self.__debug):
+                        print("Strafing")
+                    self.__steering.move_servo_to(Steering.FRONT_LEFT_POS, int(request.data.frontLeftAngle))
+                    self.__steering.move_servo_to(Steering.FRONT_RIGHT_POS, int(request.data.frontRightAngle))
+                    self.__steering.move_servo_to(Steering.REAR_LEFT_POS, int(request.data.rearLeftAngle))
+                    self.__steering.move_servo_to(Steering.REAR_RIGHT_POS, int(request.data.rearRightAngle))
+            if(request.cmd == "shooter"):
                 if(request.action == "aim"):
                     # Turn laser on
                     pass

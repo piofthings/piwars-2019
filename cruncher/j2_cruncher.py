@@ -23,6 +23,7 @@ from signal import pause
 from cruncher_menu import CruncherMenu
 from cruncher_menu_option import CruncherMenuOption
 from joystick_input import JoystickInput
+from steering_positions import SteeringPositions
 
 
 class J2Cruncher:
@@ -31,6 +32,7 @@ class J2Cruncher:
     __joystick_input = None
     __looper = True
     __debug = False
+    steeringPositions = SteeringPositions()
 
     def __init__(self, isDebug=False):
         self.__debug = isDebug
@@ -70,15 +72,74 @@ class J2Cruncher:
     def update_j2_controller(self):
         if(self.__cruncher_menu.current_menu_name == "ev_pi_noon"):
             if(self.__joystick_input.enabled == True):
-                btCommand = '{{"cmd": "steering","action": "move","data": {{ "speedLeft": {},"directionLeft": {}, "speedRight": {}, "directionRight": {} }} }}'.format(
-                    self.__joystick_input.driveLeft,
-                    self.__joystick_input.directionLeft,
-                    self.__joystick_input.driveRight,
-                    self.__joystick_input.directionRight
-                )
-                # if(self.__joystick_input.driveRight != 0 and self.__joystick_input.driveRight != 0):
+
+                steerCommand = ""
+                if(self.__joystick_input.steeringPosition == SteeringPositions.NEUTRAL):
+                    steerCommand = '{{"cmd": "wheels","action": "strafe","data": {{ "frontLeftAngle" : {}, "frontRightAngle" : {}, "rearLeftAngle" : {}, "rearRightAngle": {} }} }}\n'.format(
+                        self.steeringPositions.defaults[SteeringPositions.NEUTRAL][0],
+                        self.steeringPositions.defaults[SteeringPositions.NEUTRAL][1],
+                        self.steeringPositions.defaults[SteeringPositions.NEUTRAL][2],
+                        self.steeringPositions.defaults[SteeringPositions.NEUTRAL][3]
+                    )
+                elif(self.__joystick_input.steeringPosition == SteeringPositions.STRAFE_LEFT):
+                    steerCommand = '{{"cmd": "wheels","action": "strafe","data": {{ "frontLeftAngle" : {}, "frontRightAngle" : {}, "rearLeftAngle" : {}, "rearRightAngle": {} }} }}\n'.format(
+                        self.steeringPositions.defaults[SteeringPositions.STRAFE_LEFT][0],
+                        self.steeringPositions.defaults[SteeringPositions.STRAFE_LEFT][1],
+                        self.steeringPositions.defaults[SteeringPositions.STRAFE_LEFT][2],
+                        self.steeringPositions.defaults[SteeringPositions.STRAFE_LEFT][3]
+                    )
+                elif(self.__joystick_input.steeringPosition == SteeringPositions.STRAFE_RIGHT):
+                    steerCommand = '{{"cmd": "wheels","action": "strafe","data": {{ "frontLeftAngle" : {}, "frontRightAngle" : {}, "rearLeftAngle" : {}, "rearRightAngle": {} }} }}\n'.format(
+                        self.steeringPositions.defaults[SteeringPositions.STRAFE_RIGHT][0],
+                        self.steeringPositions.defaults[SteeringPositions.STRAFE_RIGHT][1],
+                        self.steeringPositions.defaults[SteeringPositions.STRAFE_RIGHT][2],
+                        self.steeringPositions.defaults[SteeringPositions.STRAFE_RIGHT][3]
+                    )
+                elif(self.__joystick_input.steeringPosition == SteeringPositions.SPOT_TURN):
+                    if(self.__debug):
+                        print("SPOT TURN: " + steerCommand)
+                    steerCommand = '{{"cmd": "wheels","action": "strafe","data": {{ "frontLeftAngle" : {}, "frontRightAngle" : {}, "rearLeftAngle" : {}, "rearRightAngle": {} }} }}\n'.format(
+                        self.steeringPositions.defaults[SteeringPositions.SPOT_TURN][0],
+                        self.steeringPositions.defaults[SteeringPositions.SPOT_TURN][1],
+                        self.steeringPositions.defaults[SteeringPositions.SPOT_TURN][2],
+                        self.steeringPositions.defaults[SteeringPositions.SPOT_TURN][3]
+                    )
+                if(steerCommand != ""):
+                    self.__bt_server.send(steerCommand)
+
+                if(self.__joystick_input.steeringPosition == SteeringPositions.NEUTRAL):
+                    btCommand = '{{"cmd": "steering","action": "move","data": {{ "speedLeft": {},"directionLeft": {}, "speedRight": {}, "directionRight": {} }} }}\n'.format(
+                        self.__joystick_input.driveLeft,
+                        self.__joystick_input.directionLeft,
+                        self.__joystick_input.driveRight,
+                        self.__joystick_input.directionRight)
+                elif(self.__joystick_input.steeringPosition == SteeringPositions.STRAFE_LEFT):
+                    btCommand = '{{"cmd": "steering","action": "move","data": {{ "speedLeft": {},"directionLeft": {}, "speedRight": {}, "directionRight": {} }} }}\n'.format(
+                        self.__joystick_input.driveLeft,
+                        self.__joystick_input.directionLeft,
+                        self.__joystick_input.driveLeft,
+                        self.__joystick_input.directionLeft)
+                elif(self.__joystick_input.steeringPosition == SteeringPositions.STRAFE_RIGHT):
+                    btCommand = '{{"cmd": "steering","action": "move","data": {{ "speedLeft": {},"directionLeft": {}, "speedRight": {}, "directionRight": {} }} }}\n'.format(
+                        self.__joystick_input.driveRight,
+                        self.__joystick_input.directionRight,
+                        self.__joystick_input.driveRight,
+                        self.__joystick_input.directionRight)
+                elif(self.__joystick_input.steeringPosition == SteeringPositions.SPOT_TURN):
+                    dirLeft = self.__joystick_input.directionRight
+                    if(self.__joystick_input.directionRight == 0):
+                        dirLeft = 1
+                    else:
+                        dirLeft = 0
+
+                    btCommand = '{{"cmd": "steering","action": "move","data": {{ "speedLeft": {},"directionLeft": {}, "speedRight": {}, "directionRight": {} }} }}\n'.format(
+                        self.__joystick_input.driveRight,
+                        dirLeft,
+                        self.__joystick_input.driveRight,
+                        self.__joystick_input.directionRight)
                 if(self.__debug):
-                    print(btCommand)
+                    # print(btCommand)
+                    pass
                 self.__bt_server.send(btCommand)
 
     def data_received(self, data):

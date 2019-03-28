@@ -431,53 +431,8 @@
    {  
     "cmd": "wheels",  
     "action": "strafe",  
-    "data": "left30"  
+    "data":  { "speedLeft": [0-1],"directionLeft": [0 or 1], "speedRight": [0-1], "directionRight": [0 or 1]   
    }
-   </td>
-   <td>
-   {  
-       "res": "OK",  
-       "data": None  
-   }
-   </td>
-  </tr>
-  <tr>
-   <td>
-   {  
-    "cmd": "wheels",  
-    "action": "strafe",  
-    "data": "right30"   
-   }
-   </td>
-   <td>
-   {  
-       "res": "OK",  
-       "data": None  
-   }
-   </td>
-  </tr>
-  <tr>
-   <td>
-   {  
-    "cmd": "wheels",  
-    "action": "strafe",  
-    "data": "sideways"  
-   }  
-   </td>
-   <td>
-   {  
-       "res": "OK",  
-       "data": None  
-   }
-   </td>
-  </tr>
-  <tr>
-   <td>
-   {  
-    "cmd": "wheels",  
-    "action": "strafe",  
-    "data": "none"  
-   }  
    </td>
    <td>
    {  

@@ -24,6 +24,27 @@ class Steering():
     REAR_LEFT_POS = 3
     REAR_RIGHT_POS = 4
 
+    """
+    Preset Positions:
+    SpotTurn:
+    Front Right: 21
+    Front Left:  160.7
+    Rear Right: 168
+    Rear Left: 75
+
+    Strafe Left:
+    Front Right: 21
+    Front Left: 49.4
+    Rear Right: 66.4
+    Rear Left: 75
+
+    Strafe Right:
+    Front Right: 111
+    Front Left: 150
+    Rear Right: 168
+    Rear Left: 75
+    """
+
     steering_status = None
 
     __kit = None
