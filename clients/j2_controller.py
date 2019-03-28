@@ -38,11 +38,18 @@ class J2controller():
     __piconzero_drive = None  # PiconzeroDrive()
     __gpiozero_drive = GpiozeroDrive()
     __steering = None
+    __debug = False
 
     def __init__(self, arg):
-        self.arg = arg
+        self.args = arg
+        isDebug = False
+        if(len(self.args) > 1):
+            print("\n".join(self.args[1:]))
+            if(self.args[1] == "debug"):
+                self.__debug = True
         atexit.register(self.cleanup)
 
+        self.__connect_to_cruncher()
         try:
             self.__kit = ServoKit(channels=16)
         except:
@@ -53,32 +60,39 @@ class J2controller():
         except:
             type, value, traceback = sys.exc_info()
             print("Steering status failed to load")
-            print('Error Details %s: %s %s' % (data_string, type, value))
-
-        try:
-            self.__bt_client = BluetoothClient("j2cruncher", self.data_received)
-            print("Bluetooth client initialised, ready for Cruncher comms:")
-
-        except:
-            type, value, traceback = sys.exc_info()
-            print("Bluetooth client not initialised, Cruncher comms won't work")
-            print('Error Details %s: %s %s' % (data_string, type, value))
+            print('Error Details %s: %s %s' % (type, value, traceback))
 
     def init(self):
         while self.__looper:
-            # keyp = self.__terminalMenu.keyPress
-            # if (keyp == 'q'):
-            #    self.__looper = False
-            # elif (keyp == 'c' or keyp == 'C'):
-            #    sc = ServoCalibration(self.__kit)
-            #    sc.menu()
-                # self.__menu()
-            # elif (keyp == 'd' or keyp == 'd'):
-
+            if(self.__bt_client == None):
+                self.__connect_to_cruncher()
+            elif (self.__bt_client.connected == False):
+                try:
+                    print("Trying to connect")
+                    self.__bt_client.connect()
+                except KeyboardInterrupt:
+                    self.__looper = False
+                    self.cleanup()
+                except:
+                    type, value, traceback = sys.exc_info()
+                    print('Error Details %s: %s %s' % (type, value, traceback))
             time.sleep(1 / 60)
 
+    def __connect_to_cruncher(self):
+        try:
+            self.__bt_client = BluetoothClient("B8:27:EB:55:22:18", self.data_received, auto_connect=True)
+            if(self.__debug):
+                print("Bluetooth client initialised, ready for Cruncher comms:")
+
+        except:
+            type, value, traceback = sys.exc_info()
+            if(self.__debug):
+                print("Bluetooth client not initialised, Cruncher comms won't work")
+                print('Error Details %s: %s %s' % (type, value, traceback))
+            time.sleep(1)
+
     def data_received(self, data_string):
-        # print("BT Recieved:" + data_string)
+        print("BT Recieved:" + data_string)
         try:
             request = BtRequest(json_def=data_string)
             if(request.cmd == "calibrate"):
@@ -99,7 +113,8 @@ class J2controller():
 
         except:
             type, value, traceback = sys.exc_info()
-            print('Error Deserialising %s: %s %s' % (data_string, type, value))
+            if(self.__debug):
+                print('Error Deserialising %s: %s %s' % (data_string, type, value))
 
     def cleanup(self):
         if(self.__piconzero_drive != None):

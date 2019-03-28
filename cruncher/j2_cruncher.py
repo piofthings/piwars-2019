@@ -9,7 +9,10 @@ sys.path.append(os.path.abspath(os.path.join(
     os.path.dirname(__file__), "services")))
 
 sys.path.append(os.path.abspath(os.path.join(
-    os.path.dirname(__file__), "services/menu")))
+    os.path.dirname(__file__), "sensors/menu")))
+
+sys.path.append(os.path.abspath(os.path.join(
+    os.path.dirname(__file__), "sensors/joystick")))
 
 sys.path.append(os.path.abspath(os.path.join(
     os.path.dirname(__file__), "commands")))
@@ -27,13 +30,20 @@ class J2Cruncher:
     __cruncher_menu = None
     __joystick_input = None
     __looper = True
+    __debug = False
 
-    def __init__(self):
-        self.__bt_server = BluetoothServer(self.data_received)
-        self.__cruncher_menu = CruncherMenu()
-        self.__joystick_input = JoystickInput()
+    def __init__(self, isDebug=False):
+        self.__debug = isDebug
+        self.__bt_server = BluetoothServer(self.data_received, self.__debug)
+        self.__bt_server.when_client_connects = self.bt_client_connected
+        self.__bt_server.when_client_disconnects = self.bt_client_disconnected
+        self.__bt_server.start()
+        self.__cruncher_menu = CruncherMenu(self.__debug)
+        self.__joystick_input = JoystickInput(self.__debug)
         self.__joystick_input.init_joystick()
         atexit.register(self.cleanup)
+        if(self.__debug):
+            print("Bluetooth Adapter Address:" + self.__bt_server.adapter.address)
 
     async def run(self):
         self.__cruncher_menu.init_screen()
@@ -67,12 +77,20 @@ class J2Cruncher:
                     self.__joystick_input.directionRight
                 )
                 # if(self.__joystick_input.driveRight != 0 and self.__joystick_input.driveRight != 0):
-                # print(btCommand)
+                if(self.__debug):
+                    print(btCommand)
                 self.__bt_server.send(btCommand)
 
     def data_received(self, data):
-        print(data)
+        if(self.__debug):
+            print(data)
         self.__bt_server.send(data)
+
+    def bt_client_connected(self):
+        print("Client Connected: ")
+
+    def bt_client_disconnected(self):
+        print("Client Disconnected:")
 
     def cleanup(self):
         self.__bt_server = None
@@ -81,7 +99,13 @@ class J2Cruncher:
 
 
 if __name__ == '__main__':
-    cruncher = J2Cruncher()
+    isDebug = False
+    if(len(sys.argv) > 1):
+        print("\n".join(sys.argv[1:]))
+        if(sys.argv[1] == "debug"):
+            isDebug = True
+
+    cruncher = J2Cruncher(isDebug)
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)

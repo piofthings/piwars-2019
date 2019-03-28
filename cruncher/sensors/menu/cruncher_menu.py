@@ -39,10 +39,10 @@ class CruncherMenu:
     current_menu_name = ""
     previous_menu_name = ""
 
-    def __init__(self):
-        print("""
-        Press Ctrl+C or select "Exit" to exit.
-        """)
+    __debug = False
+
+    def __init__(self, isDebug=False):
+        self.__debug = isDebug
 
         self.__paint_required = True
         self.__timer = Timer(self.__backlight_timeout, self.__switch_backlight_off)
@@ -66,7 +66,8 @@ class CruncherMenu:
         self.init_screen()
 
     async def __switch_backlight_off(self):
-        print("Switching backlight off")
+        if(self.__debug):
+            print("Switching backlight off")
 
         backlight.set_all(0, 0, 0)
         backlight.show()
@@ -179,9 +180,11 @@ class CruncherMenu:
             return
 
         if self.__timer.is_running:
-            print("Timer is running")
+            if(self.__debug):
+                print("Timer is running")
             self.__timer.cancel()
-            print("Timer Cancelled")
+            if(self.__debug):
+                print("Timer Cancelled")
 
         if len(self.__menu_options) < self.__current_menu_option:
             self.previous_menu_name = self.__menu_options[self.__current_menu_option].name
@@ -241,9 +244,11 @@ class CruncherMenu:
                 self.paint_settings_screen()
 
             if(self.__timer.is_running == False):
-                print("Timer is not running")
+                if(self.__debug):
+                    print("Timer is not running")
                 self.__timer.start()
-                print("Timer started")
+                if(self.__debug):
+                    print("Timer started")
 
             lcd.show()
 
