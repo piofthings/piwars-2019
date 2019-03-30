@@ -21,6 +21,7 @@ from steering import Steering
 from suspension import Suspension
 from steering import Steering
 from servo_calibration import ServoCalibration
+from space_invaders import SpaceInvaders
 
 from bt_request import BtRequest
 from piconzero_drive import PiconzeroDrive
@@ -37,6 +38,7 @@ class J2controller():
     __terminalMenu = TerminalMenu()
     __piconzero_drive = None  # PiconzeroDrive()
     __gpiozero_drive = GpiozeroDrive()
+    __space_invaders = None
     __steering = None
     __debug = False
 
@@ -52,6 +54,7 @@ class J2controller():
         self.__connect_to_cruncher()
         try:
             self.__kit = ServoKit(channels=16)
+            self.__space_invaders = SpaceInvaders(self.__kit)
         except:
             print("Servokit not initialised, Servo Calibration won't work")
 
@@ -92,34 +95,37 @@ class J2controller():
             time.sleep(1)
 
     def data_received(self, data_string):
-        print("BT Recieved:" + data_string)
+        #print("BT Recieved:" + data_string)
         try:
             lines = data_string.splitlines()
-            request = BtRequest(json_def=lines[0])
-            if(request.cmd == "calibrate"):
-                if(request.action == "getStatus"):
-                    self.bt_request.send(json.dumps(self.__steering.steering()))
-                elif(request.action == "setStatus"):
-                    # self.bt_request.s
-                    pass
-            if(request.cmd == "steering"):
-                if(request.action == "move"):
-                    self.__gpiozero_drive.move(int(request.data.directionLeft), int(request.data.directionRight), float(request.data.speedLeft), float(request.data.speedRight))
-            if(request.cmd == "wheels"):
-                if(request.action == "strafe"):
-                    if(self.__debug):
-                        print("Strafing")
-                    self.__steering.move_servo_to(Steering.FRONT_LEFT_POS, int(request.data.frontLeftAngle))
-                    self.__steering.move_servo_to(Steering.FRONT_RIGHT_POS, int(request.data.frontRightAngle))
-                    self.__steering.move_servo_to(Steering.REAR_LEFT_POS, int(request.data.rearLeftAngle))
-                    self.__steering.move_servo_to(Steering.REAR_RIGHT_POS, int(request.data.rearRightAngle))
-            if(request.cmd == "shooter"):
-                if(request.action == "aim"):
-                    # Turn laser on
-                    pass
-                elif(request.action == "launch"):
-                    # Fire appropriate cannon
-                    pass
+            for line in lines:
+                request = BtRequest(json_def=line)
+                if(request.cmd == "calibrate"):
+                    if(request.action == "getStatus"):
+                        self.bt_request.send(json.dumps(self.__steering.steering()))
+                    elif(request.action == "setStatus"):
+                        # self.bt_request.s
+                        pass
+                if(request.cmd == "steering"):
+                    if(request.action == "move"):
+                        self.__gpiozero_drive.move(int(request.data.directionLeft), int(request.data.directionRight), float(request.data.speedLeft), float(request.data.speedRight))
+                if(request.cmd == "wheels"):
+                    if(request.action == "strafe"):
+                        #                        if(self.__debug):
+                            # print("Strafing")
+                        self.__steering.move_servo_to(Steering.FRONT_LEFT_POS, int(request.data.frontLeftAngle))
+                        self.__steering.move_servo_to(Steering.FRONT_RIGHT_POS, int(request.data.frontRightAngle))
+                        self.__steering.move_servo_to(Steering.REAR_LEFT_POS, int(request.data.rearLeftAngle))
+                        self.__steering.move_servo_to(Steering.REAR_RIGHT_POS, int(request.data.rearRightAngle))
+                if(request.cmd == "cannon"):
+                    print("BT Recieved:" + data_string)
+
+                    if(request.action == "aim"):
+                        self.__space_invaders.aim(int(request.data.position))
+                        # Turn laser on
+                    elif(request.action == "launch"):
+                        # Fire appropriate cannon
+                        self.__space_invaders.launch(int(request.data.position))
 
         except:
             type, value, traceback = sys.exc_info()

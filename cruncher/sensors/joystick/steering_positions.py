@@ -6,6 +6,10 @@ class SteeringPositions:
     STRAFE_LEFT = 2
     STRAFE_RIGHT = 3
 
+    AIM_LASER = 4
+    FIRE_CANNON = 5
+    TURN_OFF_SAFETY = 6
+
     #[FRONT_LEFT, FRONT_RIGHT, REAR_LEFT, REAR_RIGHT]
     defaults = None
 

@@ -28,6 +28,7 @@ from cruncher_menu_option import CruncherMenuOption
 from joystick_input import JoystickInput
 from steering_positions import SteeringPositions
 from joystick_action import JoystickAction
+from cannon_action import CannonAction
 
 
 class J2Cruncher:
@@ -38,10 +39,12 @@ class J2Cruncher:
     __debug = False
     steeringPositions = SteeringPositions()
     joystick_action = None
+    cannon_action = None
 
     def __init__(self, isDebug=False):
         self.__debug = isDebug
         self.joystick_action = JoystickAction(self.__debug)
+        self.cannon_action = CannonAction(self.__debug)
         self.__bt_server = BluetoothServer(self.data_received, self.__debug)
         self.__bt_server.when_client_connects = self.bt_client_connected
         self.__bt_server.when_client_disconnects = self.bt_client_disconnected
@@ -78,6 +81,10 @@ class J2Cruncher:
 
         # else:
         #print("Previous {}, Current {}".format(self.__cruncher_menu.previous_menu_name, self.__cruncher_menu.current_menu_name))
+    def update_cannon_shooter(self):
+        cannonCommand = self.cannon_action.get_command(self.__joystick_input.steeringPosition)
+        if(cannonCommand != ""):
+            self.__bt_server.send(cannonCommand)
 
     def update_j2_controller(self):
         steerCommand, driveCommand = self.joystick_action.get_commands(self.__joystick_input.steeringPosition,

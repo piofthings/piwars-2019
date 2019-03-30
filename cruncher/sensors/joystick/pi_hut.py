@@ -41,25 +41,29 @@ class PiHutController():
     """ Select Button
 
     Values 0 or 1
-    Button No: 8
+    Button No: 10
     """
-    BUTTON_SELECT = 8
+    BUTTON_SELECT = 10
 
     """ Play button
 
     Values 0 or 1
     Button No: 9
     """
-    BUTTON_PLAY = 9
+    #BUTTON_PLAY = 9
 
     """ L2 (Left Trigger)
 
     Values 0 or 1
     """
-    LEFT_TRIGGER = 6
+    LEFT_TRIGGER = 8
 
     """ R2 (Right Trigger)
 
     Values 0 or 1
     """
-    RIGHT_TRIGGER = 7
+    RIGHT_TRIGGER = 9
+
+    LEFT_BUMPER = 6
+
+    RIGHT_BUMPER = 7
