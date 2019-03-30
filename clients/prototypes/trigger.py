@@ -14,7 +14,7 @@ kit = ServoKit(channels=16)
 
 TRIGGER_1 = 7
 TRIGGER_2_3 = 8
-TRIGGER_4_5 = 9
+TRIGGER_4_5 = 3
 
 REST = 60
 FIRE_EVEN = 120

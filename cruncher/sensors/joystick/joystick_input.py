@@ -190,9 +190,10 @@ class JoystickInput():
                     self.steeringPosition = SteeringPositions.STRAFE_LEFT
                 elif(self.__joystick.get_button(self.controllerButtons.BUTTON_R_DP_RIGHT)):
                     self.steeringPosition = SteeringPositions.STRAFE_RIGHT
-
-                if(self.__joystick.get_button(self.controllerButtons.LEFT_TRIGGER)):
-                    print(self.__joystick.get_button(self.controllerButtons.LEFT_TRIGGER))
+                elif(self.__joystick.get_button(self.controllerButtons.LEFT_TRIGGER)):
+                    self.steeringPosition = steeringPosition.AIM_LASER
+                elif(self.__joystick.get_button(self.controllerButtons.RIGHT_TRIGGER)):
+                    self.steeringPosition = steeringPosition.FIRE_CANNON
 
                 # Read axis positions (-1 to +1)
                 if self.__axisUpDownInverted:

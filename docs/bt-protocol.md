@@ -431,7 +431,7 @@
    {  
     "cmd": "wheels",  
     "action": "strafe",  
-    "data":  { "speedLeft": [0-1],"directionLeft": [0 or 1], "speedRight": [0-1], "directionRight": [0 or 1]   
+    "data":  { "speedLeft": [0-1], <br/>"directionLeft": [0 or 1], <br/>"speedRight": [0-1], <br/>"directionRight": [0 or 1]   <br/>
    }
    </td>
    <td>
@@ -446,5 +446,49 @@
 </table>
 
 <table class="table">
-
+ <thead>
+  <tr>
+   <th colspan="2">Space Invaders - Apart from the PiNoon commands, this has additional commands for Aiming lasers and shooting cannons</th>
+  </tr>
+  <tr>
+   <th>Cruncher</th>
+   <th>Controller</th>
+  </tr>
+ </thead>
+ <tbody>
+  <tr>
+   <td>
+    {  
+     "cmd": "cannon",  <br />
+     "action": "aim",  <br />
+     "data": {  <br />
+         "position": [1-5] <br />
+     }  
+    }
+   </td>
+   <td>
+    {  
+        "res": "OK",  
+        "data": None  
+    }  
+   </td>
+  </tr>
+  <tr>
+   <td>
+   {  
+    "cmd": "cannon", <br />
+    "action": "launch", <br />
+    "data":  { <br />
+        "position" : [1-5] <br />
+    } <br />
+   }
+   </td>
+   <td>
+   {  
+       "res": "OK",  
+       "data": None  
+   }
+   </td>
+  </tr>
+ </tbody>
 </table>
