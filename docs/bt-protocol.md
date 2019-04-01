@@ -492,3 +492,53 @@
   </tr>
  </tbody>
 </table>
+
+<table class="table">
+ <thead>
+  <tr>
+   <th colspan="2">Suspension controls - used in PiNoon for aiming</th>
+  </tr>
+  <tr>
+   <th>Cruncher</th>
+   <th>Controller</th>
+  </tr>
+ </thead>
+ <tbody>
+  <tr>
+   <td>
+    {  
+     "cmd": "suspension",  <br />
+     "action": "raise",  <br />
+     "data": {  <br />
+         "which" "['front/rear/both']",
+         "position": [115-0] <br />
+     }  
+    }
+   </td>
+   <td>
+    {  
+        "res": "OK",  
+        "data": None  
+    }  
+   </td>
+  </tr>
+  <tr>
+   <td>
+   {  
+    "cmd": "suspension", <br />
+    "action": "lower", <br />
+    "data":  { <br />
+        "which" "['front/rear/both']",
+        "position" : [115-0] <br />
+    } <br />
+   }
+   </td>
+   <td>
+   {  
+       "res": "OK",  
+       "data": None  
+   }
+   </td>
+  </tr>
+ </tbody>
+</table>

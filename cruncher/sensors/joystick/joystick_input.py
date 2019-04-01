@@ -46,6 +46,18 @@ class JoystickInput():
     controllerButtons = PiHutController()
 
     @property
+    def speedMultiplier(self):
+        """I'm the 'Steering Position' property."""
+        return self.__slowFactor
+
+    @speedMultiplier.setter
+    def speedMultiplier(self, value):
+        if(value > 1):
+            value = 1
+
+        self.__slowFactor = value
+
+    @property
     def steeringPosition(self):
         """I'm the 'Steering Position' property."""
         return self.__steering_postition
@@ -196,7 +208,6 @@ class JoystickInput():
                     self.steeringPosition = SteeringPositions.FIRE_CANNON
                 elif(self.__joystick.get_button(self.controllerButtons.BUTTON_SELECT)):
                     self.steeringPosition = SteeringPositions.TURN_OFF_SAFETY
-
                 # Read axis positions (-1 to +1)
                 if self.__axisUpDownInverted:
                     upDown = -self.__joystick.get_axis(self.__axisUpDown)
@@ -226,8 +237,8 @@ class JoystickInput():
                     self.driveRight *= 1.0 - (2.0 * leftRight)
                 # Check for button presses
                 if self.__joystick.get_button(self.__buttonSlow):
-                    self.driveLeft *= self.__slowFactor
-                    self.driveRight *= self.__slowFactor
+                    self.driveLeft *= self.speedMultiplier
+                    self.driveRight *= self.speedMultiplier
             if(self.driveRight < 0):
                 self.directionRight = 0
                 self.driveRight *= -1

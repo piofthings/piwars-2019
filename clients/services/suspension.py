@@ -8,110 +8,51 @@ from keyboard_input import KeyboardInput
 class Suspension:
     __looper = True
     __keyboardInput = KeyboardInput
+    __kit = None
+    MIN_ANGLE = 115
+    MAX_ANGLE = 0
 
     def __init__(self, servoKit):
         if (servoKit != None):
-            kit = servoKit
-            kit.servo[4].angle = 135
-            kit.servo[5].angle = 135
-            time.sleep(2)
-            kit.servo[4].angle = 0
-            kit.servo[5].angle = 0
+            self.__kit = servoKit
+            self.__kit.servo[4].angle = self.MIN_ANGLE
+            self.__kit.servo[5].angle = self.MIN_ANGLE
 
-    def menu(self):
-        while __looper:
-            print("J2 COntroller -> Wheel Calibration")
+    def raise_front_by(self, degrees):
+        final = self.__kit.servo[4].angle - degrees
+        if(final > self.MAX_ANGLE):
+            self.__kit.servo[4].angle = final
+        else:
+            self.__kit.servo[4].angle = self.MAX_ANGLE
 
+    def raise_rear_by(self, degrees):
+        final = self.__kit.servo[4].angle - degrees
+        if(final > self.MAX_ANGLE):
+            self.__kit.servo[5].angle = final
+        else:
+            self.__kit.servo[5].angle = self.MAX_ANGLE
 
-""""
-# Picon Zero Servo Test
-# Use arrow keys to move 2 servos on outputs 0 and 1 for Pan and Tilt
-# Use G and H to open and close the Gripper arm
-# Press Ctrl-C to stop
-#
+    def lower_front_by(self, degrees):
+        final = self.__kit.servo[4] + degrees
+        if(final < self.MIN_ANGLE):
+            self.__kit.servo[4].angle = final
+        else:
+            self.__kit.servo[4].angle = self.MIN_ANGLE
 
-import piconzero as pz, time
+    def raise_both_by(self, degrees):
+        final = self.__kit.servo[4].angle - degrees
+        if(final > self.MAX_ANGLE):
+            self.__kit.servo[4].angle = final
+            self.__kit.servo[5].angle = final
+        else:
+            self.__kit.servo[4].angle = self.MAX_ANGLE
+            self.__kit.servo[5].angle = self.MAX_ANGLE
 
-#======================================================================
-# Reading single character by forcing stdin to raw mode
-import sys
-import tty
-import termios
-
-def readchar():
-    fd = sys.stdin.fileno()
-    old_settings = termios.tcgetattr(fd)
-    try:
-        tty.setraw(sys.stdin.fileno())
-        ch = sys.stdin.read(1)
-    finally:
-        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-    if ch == '0x03':
-        raise KeyboardInterrupt
-    return ch
-
-def readkey(getchar_fn=None):
-    getchar = getchar_fn or readchar
-    c1 = getchar()
-    if ord(c1) != 0x1b:
-        return c1
-    c2 = getchar()
-    if ord(c2) != 0x5b:
-        return c1
-    c3 = getchar()
-    return chr(0x10 + ord(c3) - 65)  # 16=Up, 17=Down, 18=Right, 19=Left arrows
-
-# End of single character reading
-#======================================================================
-
-speed = 60
-
-print "Tests the servos by using the arrow keys to control"
-print "Press <space> key to centre"
-print "Press Ctrl-C to end"
-print
-
-# Define which pins are the servos
-pan = 0
-tilt = 1
-#grip = 2
-
-pz.init()
-
-# Set output mode to Servo
-pz.setOutputConfig(pan, 2)
-pz.setOutputConfig(tilt, 2)
-#pz.setOutputConfig(grip, 2)
-
-# Centre all servos
-panVal = 90
-tiltVal = 90
-#gripVal = 90
-pz.setOutput (pan, panVal)
-pz.setOutput (tilt, tiltVal)
-#pz.setOutput (grip, gripVal)
-
-# main loop
-try:
-    while True:
-        keyp = readkey()
-        if keyp == 'w' or ord(keyp) == 16:
-            panVal = max (0, panVal - 5)
-            tiltVal = panVal
-            print 'Up', panVal
-        elif keyp == 'z' or ord(keyp) == 17:
-            panVal = min (180, panVal + 5)
-            tiltVal = panVal
-            print 'Down', panVal
-        elif ord(keyp) == 3:
-            break
-        pz.setOutput (pan, panVal)
-        pz.setOutput (tilt, tiltVal)
-#        pz.setOutput (grip, gripVal)
-
-except KeyboardInterrupt:
-    print
-
-finally:
-    pz.cleanup()
-"""
+    def lower_both_by(self, degrees):
+        final = self.__kit.servo[4] + degrees
+        if(final < self.MIN_ANGLE):
+            self.__kit.servo[4].angle = final
+            self.__kit.servo[5].angle = final
+        else:
+            self.__kit.servo[4].angle = self.MIN_ANGLE
+            self.__kit.servo[5].angle = self.MIN_ANGLE

@@ -40,6 +40,7 @@ class J2controller():
     __gpiozero_drive = GpiozeroDrive()
     __space_invaders = None
     __steering = None
+    __suspension = None
     __debug = False
 
     def __init__(self, arg):
@@ -60,6 +61,7 @@ class J2controller():
 
         try:
             self.__steering = Steering(self.__kit, steeringStatusFile=os.path.abspath("./config/steering_status.json"))
+            self.__suspension = Suspension(self.__kit)
         except:
             type, value, traceback = sys.exc_info()
             print("Steering status failed to load")
@@ -106,6 +108,21 @@ class J2controller():
                     elif(request.action == "setStatus"):
                         # self.bt_request.s
                         pass
+                if(request.cmd == "suspension"):
+                    if(request.action == "raise"):
+                        if(request.data.which == "front"):
+                            self.__suspension.raise_front_by(request.data.position)
+                        elif(request.data.which == "rear"):
+                            self.__suspension.raise_rear_by(request.data.position)
+                        elif(request.data.which == "both"):
+                            self.__suspension.raise_both_by(request.data.position)
+                    if(request.action == "lower"):
+                        if(request.data.which == "front"):
+                            self.__suspension.lower_front_by(request.data.position)
+                        elif(request.data.which == "rear"):
+                            self.__suspension.lower_rear_by(request.data.position)
+                        elif(request.data.which == "both"):
+                            self.__suspension.lower_both_by(request.data.position)
                 if(request.cmd == "steering"):
                     if(request.action == "move"):
                         self.__gpiozero_drive.move(int(request.data.directionLeft), int(request.data.directionRight), float(request.data.speedLeft), float(request.data.speedRight))

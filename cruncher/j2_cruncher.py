@@ -69,18 +69,42 @@ class J2Cruncher:
                 self.cleanup()
 
     def process_menu(self):
-        if(self.__cruncher_menu.current_menu_name == "ev_pi_noon" or
-                self.__cruncher_menu.current_menu_name == "ev_space_invaders"):
+        if(self.__cruncher_menu.current_menu_name == "ev_pi_noon"):
             self.__joystick_input.poll_joystick_events()
             self.__joystick_input.enabled = True
+            self.__joystick_input.speedMultiplier = 0.8
             self.update_j2_controller()
-            if(self.__cruncher_menu.current_menu_name == "ev_space_invaders"):
-                self.update_cannon_shooter()
+        if(self.__cruncher_menu.current_menu_name == "ev_spirit"):
+            self.__joystick_input.poll_joystick_events()
+            self.__joystick_input.enabled = True
+            self.__joystick_input.speedMultiplier = 0.7
+            self.update_j2_controller()
+        if(self.__cruncher_menu.current_menu_name == "ev_obstacles"):
+            self.__joystick_input.poll_joystick_events()
+            self.__joystick_input.enabled = True
+            self.__joystick_input.speedMultiplier = 0.7
+            self.update_j2_controller()
+        elif(self.__cruncher_menu.current_menu_name == "ev_space_invaders"):
+            self.__joystick_input.poll_joystick_events()
+            self.__joystick_input.enabled = True
+            self.__joystick_input.speedMultiplier = 0.3
+            self.update_j2_controller()
+            self.update_cannon_shooter()
+            # self.update_suspension()
+        elif(self.__cruncher_menu.current_menu_name == "ev_blastoff"):
+            self.update_straight_line_speed()
         else:
             self.__joystick_input.enabled = False
 
         # else:
         #print("Previous {}, Current {}".format(self.__cruncher_menu.previous_menu_name, self.__cruncher_menu.current_menu_name))
+
+    def update_straight_line_speed(self):
+        pass
+
+    def update_suspension(self):
+        pass
+
     def update_cannon_shooter(self):
         cannonCommand = self.cannon_action.get_command(self.__joystick_input.steeringPosition)
         if(cannonCommand != ""):
