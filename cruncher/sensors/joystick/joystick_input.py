@@ -210,18 +210,19 @@ class JoystickInput():
                     self.steeringPosition = SteeringPositions.TURN_OFF_SAFETY
                 # Read axis positions (-1 to +1)
                 if self.__axisUpDownInverted:
-                    upDown = -self.__joystick.get_axis(self.__axisUpDown)
+                    upDown = -self.__joystick.get_axis(self.controllerButtons.L_JS_TOP_BOTTOM)
                     if(self.__debug):
                         print("going forward")
                 else:
-                    upDown = self.__joystick.get_axis(self.__axisUpDown)
+                    upDown = self.__joystick.get_axis(self.controllerButtons.L_JS_TOP_BOTTOM)
                     if(self.__debug):
                         print("going backwards")
 
                 if self.__axisLeftRightInverted:
-                    leftRight = -self.__joystick.get_axis(self.__axisLeftRight)
+                    leftRight = -self.__joystick.get_axis(self.controllerButtons.L_JS_LEFT_RIGHT)
                 else:
-                    leftRight = self.__joystick.get_axis(self.__axisLeftRight)
+                    leftRight = self.__joystick.get_axis(self.controllerButtons.L_JS_LEFT_RIGHT)
+                print("LeftRight:" + leftRight)
                 # Apply steering speeds
                 if not self.__joystick.get_button(self.__buttonFastTurn):
                     leftRight *= 0.5
