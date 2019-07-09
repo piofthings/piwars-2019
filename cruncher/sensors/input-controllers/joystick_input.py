@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+joystickController  # !/usr/bin/env python3
 # coding: Latin-1
 
 import time
@@ -43,7 +43,17 @@ class JoystickInput():
 
     __steering_postition = SteeringPositions.NEUTRAL
 
-    controllerButtons = PiHutController()
+    __joystickController = None
+
+    @property
+    def joystickController(self):
+        """Joystick controller in use. Provide this in the constructor to customise button/axis bindings"""
+        return self.__joystickController
+
+    @joystickController.setter
+    def joystickController(self, value):
+        if(value is not None):
+            self.__joystickController = value
 
     @property
     def speedMultiplier(self):
@@ -116,12 +126,14 @@ class JoystickInput():
         sys.stdout = sys.stderr
         self.__debug = debug
 
-    def init_joystick(self, start_polling=False):
+    def init_joystick(self, controller=None, start_polling=False):
         # Setup pygame and wait for the joystick to become available
         # Removes the need to have a GUI window
         os.environ["SDL_VIDEODRIVER"] = "dummy"
         pygame.init()
         # pygame.display.set_mode((1,1))
+        if(controller == None):
+            print("No controller passed using default")
         if(self.__debug):
             print('Waiting for joystick... (press CTRL+C to abort)')
         attempts = 0
@@ -192,36 +204,36 @@ class JoystickInput():
                 # A joystick has been moved
                 hadEvent = True
             if hadEvent:
-                if (self.__joystick.get_button(self.controllerButtons.BUTTON_HOME)):
+                if (self.__joystick.get_button(self.__joystickController.BUTTON_HOME)):
                     self.steeringPosition = SteeringPositions.NEUTRAL
-                elif(self.__joystick.get_button(self.controllerButtons.BUTTON_R_DP_TOP)):
+                elif(self.__joystick.get_button(self.__joystickController.BUTTON_R_DP_TOP)):
                     self.steeringPosition = SteeringPositions.NEUTRAL
-                elif(self.__joystick.get_button(self.controllerButtons.BUTTON_R_DP_BOTTOM)):
+                elif(self.__joystick.get_button(self.__joystickController.BUTTON_R_DP_BOTTOM)):
                     self.steeringPosition = SteeringPositions.SPOT_TURN
-                elif(self.__joystick.get_button(self.controllerButtons.BUTTON_R_DP_LEFT)):
+                elif(self.__joystick.get_button(self.__joystickController.BUTTON_R_DP_LEFT)):
                     self.steeringPosition = SteeringPositions.STRAFE_LEFT
-                elif(self.__joystick.get_button(self.controllerButtons.BUTTON_R_DP_RIGHT)):
+                elif(self.__joystick.get_button(self.__joystickController.BUTTON_R_DP_RIGHT)):
                     self.steeringPosition = SteeringPositions.STRAFE_RIGHT
-                elif(self.__joystick.get_button(self.controllerButtons.LEFT_TRIGGER)):
+                elif(self.__joystick.get_button(self.__joystickController.LEFT_TRIGGER)):
                     self.steeringPosition = SteeringPositions.AIM_LASER
-                elif(self.__joystick.get_button(self.controllerButtons.RIGHT_TRIGGER)):
+                elif(self.__joystick.get_button(self.__joystickController.RIGHT_TRIGGER)):
                     self.steeringPosition = SteeringPositions.FIRE_CANNON
-                elif(self.__joystick.get_button(self.controllerButtons.BUTTON_SELECT)):
+                elif(self.__joystick.get_button(self.__joystickController.BUTTON_SELECT)):
                     self.steeringPosition = SteeringPositions.TURN_OFF_SAFETY
                 # Read axis positions (-1 to +1)
                 if self.__axisUpDownInverted:
-                    upDown = -self.__joystick.get_axis(self.controllerButtons.L_JS_TOP_BOTTOM)
+                    upDown = -self.__joystick.get_axis(self.__joystickController.L_JS_TOP_BOTTOM)
                     if(self.__debug):
                         print("going forward")
                 else:
-                    upDown = self.__joystick.get_axis(self.controllerButtons.L_JS_TOP_BOTTOM)
+                    upDown = self.__joystick.get_axis(self.__joystickController.L_JS_TOP_BOTTOM)
                     if(self.__debug):
                         print("going backwards")
 
                 if self.__axisLeftRightInverted:
-                    leftRight = -self.__joystick.get_axis(self.controllerButtons.L_JS_LEFT_RIGHT)
+                    leftRight = -self.__joystick.get_axis(self.__joystickController.L_JS_LEFT_RIGHT)
                 else:
-                    leftRight = self.__joystick.get_axis(self.controllerButtons.L_JS_LEFT_RIGHT)
+                    leftRight = self.__joystick.get_axis(self.__joystickController.L_JS_LEFT_RIGHT)
                 print("LeftRight:" + leftRight)
                 # Apply steering speeds
                 if not self.__joystick.get_button(self.__buttonFastTurn):
